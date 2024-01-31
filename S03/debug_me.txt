@@ -1,0 +1,5 @@
+In this code, we obtain a ZeroDivisionError since we are not applying an exception that
+takes into consideration that in the first function we can have two numbers with the same value.
+Therefore, in this particular case, we find that in the "t1" variable we are applying such function (def g(a, b))
+that subtracts the numbers c and b. In the "prints" we see that while in "Result 1" the program works properly,
+in "Result 2" we obtain the error since c = d = 3; c-d = 0; t3 = 2 * (t0 / 0).
