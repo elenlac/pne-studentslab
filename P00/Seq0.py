@@ -52,3 +52,4 @@ def seq_count(seq):
 
     print(bases_dict)
 
+# update

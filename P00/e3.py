@@ -10,3 +10,4 @@ for g in genes:  # for loop for iterating over the 4 genes and calculating their
 
     print("Gene", g, "->", "Length:", seq_len(sequence))
 
+ # update
