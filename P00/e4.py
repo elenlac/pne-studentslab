@@ -1,4 +1,5 @@
 from Seq0 import *
+print("-----| Exercise 4 |------")
 seq_count_base("../sequences/U5.txt.fa", "A")
 seq_count_base("../sequences/ADA.txt.fa", "C")
 seq_count_base("../sequences/FRAT1.txt.fa", "T")
