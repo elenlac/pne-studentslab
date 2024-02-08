@@ -1,9 +1,12 @@
 from Seq0 import *
 print("-----| Exercise 3 |------")
 
-folder = "../sequences/"
-for gene_name in ["U5", "ADA", "FRAT1", "FXN"]:
-    filename = (gene_name + ".txt.fa")
+genes = ["U5", "ADA", "FRAT1", "FXN"]  # list with the names of the Genes
+for g in genes:  # for loop for iterating over the 4 genes and calculating their lengths
+    folder = "../sequences/"
+    filename = g + ".txt.fa"  # filename can be obtained by adding the ".txt.fa" string to the gene name
     file = folder + filename
-    seq_len(file)
+    sequence = seq_read_fasta(file)
+
+    print("Gene", g, "->", "Length:", seq_len(sequence))
 
