@@ -34,6 +34,10 @@ def seq_len(seq):
 
 def seq_count_base(seq, base):
     sequence = seq_read_fasta(seq)
+
+    return sequence.count(base)
+
+
     bases = ["A", "C", "G", "T"]
     genes = ["U5", "ADA", "FRAT1", "FXN"]
     for g in genes:
