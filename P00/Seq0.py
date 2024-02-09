@@ -36,7 +36,9 @@ def seq_count_base(seq, base):
     return count
 
 # EXERCISE 5
-
+def seq_count(seq):
+    count = seq.count(base)
+    return count
 
 def seq_count(seq):
     bases_dict = {"A": 0, "C": 0, "G": 0, "T": 0}  # empty dictionary that will store the basis
