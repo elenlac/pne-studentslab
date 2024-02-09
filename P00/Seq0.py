@@ -31,18 +31,9 @@ def seq_len(seq):
 
 # EXERCISE 4
 
-
 def seq_count_base(seq, base):
-    sequence = seq_read_fasta(seq)
-
-    return sequence.count(base)
-
-
-    bases = ["A", "C", "G", "T"]
-    genes = ["U5", "ADA", "FRAT1", "FXN"]
-    for g in genes:
-        for b in bases:
-            filename = "sequences" + g + ".txt"
+    count = seq.count(base)
+    return count
 
 # EXERCISE 5
 
@@ -56,4 +47,3 @@ def seq_count(seq):
 
     print(bases_dict)
 
-# update

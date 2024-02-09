@@ -9,5 +9,3 @@ for g in genes:  # for loop for iterating over the 4 genes and calculating their
     sequence = seq_read_fasta(file)
 
     print("Gene", g, "->", "Length:", seq_len(sequence))
-
- # update
