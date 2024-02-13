@@ -24,7 +24,7 @@ def seq_read_fasta(filename):  # useful for the sequence to be in one line
 # EXERCISE 3
 
 
-def seq_len(seq):
+def seq_len(seq=None):
     length = len(seq)
     return length
 
@@ -32,7 +32,7 @@ def seq_len(seq):
 # EXERCISE 4
 
 
-def seq_count_base(seq, base):
+def seq_count_base(seq, base=None):
     count = seq.count(base)
     return count
 
