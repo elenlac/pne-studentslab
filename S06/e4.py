@@ -1,3 +1,6 @@
+import termcolor
+
+
 class Seq:
     def __init__(self, sequence):
         self.sequence = sequence
@@ -18,19 +21,19 @@ def generate_seqs(pattern, number):  # will create a list with the provided numb
     return new_sequences
 
 
-def print_seqs(seq_list):
+def print_seqs(seq_list, color):
     for seq in seq_list:
         index = seq_list.index(seq)
         length = seq.len()
-        print(f"Sequence {index}: (Length: {length}) {seq}")
+        termcolor.cprint(f"Sequence {index}: (Length: {length}) {seq}", color)
 
 
 seq_list1 = generate_seqs("A", 3)
 seq_list2 = generate_seqs("AC", 5)
 
-print("List 1:")
-print_seqs(seq_list1)
+termcolor.cprint("List 1:", "blue")
+print_seqs(seq_list1, "blue")
 
 print()
-print("List 2:")
-print_seqs(seq_list2)
+termcolor.cprint("List 2:", "green")
+print_seqs(seq_list2, "green")
