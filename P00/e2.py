@@ -4,4 +4,5 @@ filename = "U5.txt.fa"
 sequence = seq_read_fasta(folder + filename)
 
 print("DNA file:", filename)
-print("The first 20 bases are:", sequence[:21])
+print("The first 20 bases are:", sequence[:20])
+
