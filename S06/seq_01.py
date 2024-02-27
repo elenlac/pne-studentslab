@@ -1,14 +1,24 @@
+def valid_bases(strbases):
+    valid = True
+    for b in strbases:
+        if b not in Seq.bases_list:  # the Seq in front indicates that bases_list is a class attribute
+            valid = False
+            break  # you exit the for loop
+    return valid
+
+
 class Seq:
-    """A class for representing sequences"""
+    bases_list = ["A", "C", "T", "G"]  # list with the bases of a DNA sequence (class attribute or property or static)
+
     def __init__(self, strbases):
-        # Initialize the sequence with the value
-        # passed as argument when creating the object
-        self.strbases = strbases
-        print("New sequence created!")
+        if valid_bases(strbases):
+            self.strbases = strbases
+            print("New sequence created!")
+        else:
+            self.strbases = "ERROR"
+            print("INCORRECT Sequence detected")
 
     def __str__(self):
-        """Method called when the object is being printed"""
-        # -- We just return the string with the sequence
         return self.strbases
 
     def len(self):
@@ -34,6 +44,7 @@ class Gene(Seq):
         return self.name + "-" + self.strbases
 
 
+"""
 # Main program
 # Create objects of the class Seq
 s1 = Seq("AGTACACTGGT")
@@ -46,4 +57,4 @@ print(f"Sequence 1: {s1}")
 print(f"Gene: {g}")
 print(f"  Length: {s1.len()}")  # s1.len() Execute the action for calculating the length on the s1 object
 print(f"Sequence 2: {s2}")
-print(f"  Length: {s2.len()}")
+print(f"  Length: {s2.len()}")"""
