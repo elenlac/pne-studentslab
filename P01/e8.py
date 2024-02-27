@@ -10,4 +10,4 @@ for i, seq in enumerate(seq_list):
     print(f"Sequence {i+1}: (Length: {seq.len()}) {seq}\n Bases: {seq.count()} \n Rev: {seq.reverse()} "
           f"\n Comp: {seq.complement()}")
 
-# update
+#  update

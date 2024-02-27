@@ -8,3 +8,5 @@ print(f"-----| Practice {practice} , Exercise {exercise} |------")
 seq_list = [Seq(), Seq("TATAC")]
 for i, seq in enumerate(seq_list):
     print(f"Sequence {i+1}: {seq}")  # +1 because it starts on 0 by default
+
+# update
