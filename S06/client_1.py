@@ -20,4 +20,4 @@ s.send(str.encode("HELLO FROM THE CLIENT!!!"))  # transform the string into byte
 
 # Close the socket
 s.close()
-# update
+#  update
