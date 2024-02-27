@@ -1,6 +1,9 @@
 from Seq1 import Seq
 
-print("-----| Practice 1, Exercise 1 |------")
+practice = 1
+exercise = 1
+
+print(f"-----| Practice {practice} , Exercise {exercise} |------")
 
 s1 = Seq("ACTGA")
 

@@ -1,28 +1,19 @@
-class Seq:
-    def __init__(self, sequence):
-        self.sequence = sequence
-
-    def __str__(self):
-        return self.sequence
-
-    def len(self):
-        return len(self.sequence)
+from seq_01 import Seq
 
 
 def generate_seqs(pattern, number):  # will create a list with the provided number of sequences(pattern)
     new_sequences = []  # here we store the new sequences created each iteration
-    for i in range(1, number + 1):  # we start in 1 since we would be returning an empty list in 0
-        sequence = pattern * i  # the current sequence(pattern) will be repeated a determined number of times (i)
-        new_sequences.append(Seq(sequence))  # we append the sequence to our list
-        print("New sequence created!")
+    for i in range(1, number + 1):  # start in 1 (we would be returning an empty list in 0)
+        sequence = Seq(pattern * i)  # the current sequence(pattern) will be repeated a determined number of times (i)
+        new_sequences.append(sequence)  # we append the sequence, that we turned into and object, to our list
     return new_sequences
 
+# we needed to turn our sequence into an object (with Seq) in order to be able to apply these following functions:
 
-def print_seqs(seq_list):
-    for seq in seq_list:
-        index = seq_list.index(seq)
-        length = seq.len()
-        print(f"Sequence {index}: (Length: {length}) {seq}")
+
+def print_seqs(seq_list):  # like the one from e2 but with a different version of the code (using ENUMERATE)
+    for i, seq in enumerate(seq_list):
+        print(f"Sequence {i}: (Length: {seq.len()}) {seq}")
 
 
 seq_list1 = generate_seqs("A", 3)

@@ -1,19 +1,19 @@
 from Seq1 import Seq
 
-print("-----| Practice 1, Exercise 5 |------")
+practice = 1
+exercise = 5
 
-# -- Null sequence
-s0 = Seq()
+print(f"-----| Practice {practice} , Exercise {exercise} |------")
 
-# -- Valid sequence
-s1 = Seq("ACTGA")
+seq_list = [Seq(), Seq("ACTGA"), Seq("Invalid sequence")]
+for i, seq in enumerate(seq_list):
+      print(f"Sequence {i + 1}: (Length: {seq.len()}) {seq} \n A: {seq.count_base('A')},  C: {seq.count_base('C')},  "
+            f"T: {seq.count_base('T')},  G: {seq.count_base('G')}")
 
-# -- Invalid sequence
-s2 = Seq("Invalid sequence")
 
-print(f"Sequence 0: (Length: {s0.len()}) {s0} \n A: {s0.count_base('A')},  C: {s0.count_base('C')},"
-      f"  T: {s0.count_base('T')},  G: {s0.count_base('G')} ")
-print(f"Sequence 1: (Length: {s1.len()}) {s1} \n A: {s1.count_base('A')},  C: {s1.count_base('C')},"
-      f"  T: {s1.count_base('T')},  G: {s1.count_base('G')} ")
-print(f"Sequence 2: (Length: {s2.len()}) {s2} \n A: {s2.count_base('A')},  C: {s2.count_base('C')},"
-      f"  T: {s2.count_base('T')},  G: {s2.count_base('G')} ")
+""" 
+# the problem with this loop is that we don't use the commas
+for b in Seq.bases_list:
+    print(f"\t{b}: {seq.count_base(b)}, end="" ")  # we use the end in order to put everything in one line
+    print()
+    """

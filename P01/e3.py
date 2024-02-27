@@ -1,16 +1,10 @@
 from Seq1 import Seq
 
-print("-----| Practice 1, Exercise 3 |------")
+practice = 1
+exercise = 3
 
-# -- Null sequence
-s1 = Seq()
+print(f"-----| Practice {practice} , Exercise {exercise} |------")
 
-# -- Valid sequence
-s2 = Seq("ACTGA")
-
-# -- Invalid sequence
-s3 = Seq("Invalid sequence")
-
-print(f"Sequence 1: {s1}")
-print(f"Sequence 2: {s2}")
-print(f"Sequence 3: {s3}")
+seq_list = [Seq(), Seq("ACTGA"), Seq("Invalid sequence")]
+for i, seq in enumerate(seq_list):
+    print(f"Sequence {i+1}: {seq}")
