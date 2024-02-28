@@ -1,0 +1,3 @@
+Machine             Interface       Date            Place       IP
+mobile              Wifi            Feb 28th        lab         10.1.159.66
+Lab computer        Wire            Feb 28th        lab         212.128.255.83
