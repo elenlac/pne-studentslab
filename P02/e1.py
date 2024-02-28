@@ -14,3 +14,4 @@ c = Client(IP, PORT)
 
 # -- Test the ping method
 c.ping()
+

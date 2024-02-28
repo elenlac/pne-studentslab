@@ -21,5 +21,6 @@ print("MESSAGE FROM THE SERVER:\n")
 print(msg.decode("utf-8"))
 
 
+
 # Closing the socket
 s.close()
