@@ -1,6 +1,7 @@
 import os
 from Seq2 import Seq
 from Client0 import Client
+from termcolor import *
 
 practice = 2
 exercise = 4
@@ -24,16 +25,17 @@ try:
         s.read_fasta(filename)  # -- Initialize the null seq with the given file in fasta format
 
         # -- Send a message to the server
-        msg = f"Sending the {g} Gene to the server..."
+        msg = colored(f"Sending the {g} Gene to the server...", "blue")
         print(f"To Server: {msg}")
 
         print(f"From Server:\n")
-        response = c.talk(msg)
+        response = colored(c.talk(msg), "green")
         print(f"{response}\n")
 
-        msg2 = str(s)
+        str_sequence = str(s)
+        msg2 = colored(str_sequence, "blue")
         print(f"To Server: {msg2}")
-        response = c.talk(msg2)
+        response = colored(c.talk(msg2), "green")
         print(f"{response}\n")
 
 

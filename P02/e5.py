@@ -1,6 +1,7 @@
 import os
 from Seq2 import Seq
 from Client0 import Client
+from termcolor import *
 
 practice = 2
 exercise = 5
@@ -23,13 +24,18 @@ try:
 
     print(f"Gene FRAT1: {s}")
 
-    msg = f"Sending FRAT1 Gene to the server, in fragments of 10 bases..."
+    msg = colored(f"Sending FRAT1 Gene to the server, in fragments of 10 bases...", "green")
     reponse0 = c.talk(msg)
 
-    fragment = str(s)[:10]
-    fragment1 = f"Fragment 1: {fragment}"
-    print(fragment1)
-    response1 = c.talk(fragment1)
+    start = 0
+    end = 10
+    for i in range(5):  # it repeats 5 times
+        f = str(s)[start:end]
+        start += 10
+        end += 10
+        fragment = colored(f"Fragment {i+1}: {f}", "green")
+        print(fragment)
+        response1 = c.talk(fragment)
 
 
 except FileNotFoundError:
