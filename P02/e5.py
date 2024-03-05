@@ -25,7 +25,7 @@ try:
     print(f"Gene FRAT1: {s}")
 
     msg = colored(f"Sending FRAT1 Gene to the server, in fragments of 10 bases...", "green")
-    reponse0 = c.talk(msg)
+    response0 = c.talk(msg)
 
     start = 0
     end = 10
