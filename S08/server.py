@@ -44,12 +44,12 @@ try:
         print(f"Message from client: {msg}")
 
         # Send the message
-        clientsocket.send(str.encode("Hello from the teacher's server\n"))
+        clientsocket.send(str.encode("Hello from the server\n"))
 
         clientsocket.close()
 
 except socket.error:
-    print("Problems using ip {} port {}. Is the IP correct? Do you have port permission?".format(IP, PORT))
+    print(f"Problems using ip {IP} port {PORT}. Is the IP correct? Do you have port permission?")
 
 except KeyboardInterrupt:
     print("Server stopped by the user")

@@ -1,4 +1,6 @@
 """This file is our module, that will be imported in all the exercises"""
+"""It is a copy of the Seq 1 file from practice 1"""
+
 
 def valid_bases(strbases):
     valid = True
@@ -7,6 +9,7 @@ def valid_bases(strbases):
             valid = False
             break  # you exit the for loop
     return valid
+
 
 class Seq:
     bases_list = ["A", "C", "T", "G"]  # list with the bases of a DNA sequence (class attribute or property or static)
