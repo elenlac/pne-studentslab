@@ -17,13 +17,11 @@ class Client:
 
         s.connect((self.ip, self.port))  # now the connection to the server is established
 
-        msg = input("Enter a message: ")
-        s.send(str.encode(msg))  # we send the data
+        s.send(str.encode(msg))  # we send the data (the message)
 
-        response = s.recv(2048).decode("utf-8")  # we receive data
+        response = s.recv(2048).decode("utf-8")  # we receive data (the response)
 
-        s.close()  # finally, we close the socket
-
+        s.close()  # finally, we close the socket and return the response received from the server
         return response
 
 
