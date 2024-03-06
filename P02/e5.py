@@ -15,27 +15,42 @@ PORT = 8081
 # -- Create a client object
 c = Client(IP, PORT)
 
-# -- Create a Null sequence
-s = Seq()
+# -- Test the str method
+print(c)
 
+g = "FRAT1"
+filename = os.path.join("..", "sequences", g + ".txt.fa")
 try:
-    filename = os.path.join("..", "sequences", "FRAT1" + ".txt.fa")
+    # -- Create a Null sequence
+    s = Seq()
+
     s.read_fasta(filename)
 
-    print(f"Gene FRAT1: {s}")
+    print(f"Gene {g}: {s}")
 
-    msg = colored(f"Sending FRAT1 Gene to the server, in fragments of 10 bases...", "green")
-    response0 = c.talk(msg)
+    msg = colored(f"Sending {g} Gene to the server, in fragments of 10 bases...", "green")
+    response = c.talk(msg)
 
     start = 0
     end = 10
-    for i in range(5):  # it repeats 5 times
+    number_fragments = 5
+    for i in range(number_fragments):  # it repeats 5 times in this case, goes from 0 to number of fragments
         f = str(s)[start:end]
         start += 10
         end += 10
         fragment = colored(f"Fragment {i+1}: {f}", "green")
         print(fragment)
         response1 = c.talk(fragment)
+
+    """
+    number_fragments = 5
+    number_bases = 10 
+    
+    for i in range(1, number_fragments + 1):
+        print(f"Fragment {i+1}: {f}")
+    
+    
+    """
 
 
 except FileNotFoundError:

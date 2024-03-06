@@ -15,13 +15,17 @@ PORT = 8081
 # -- Create a client object
 c = Client(IP, PORT)
 
-# -- Create a Null sequence
-s = Seq()
+# -- Test the str method
+print(c)
+
 
 genes = ["U5", "FRAT1", "ADA"]
-try:
-    for g in genes:
-        filename = os.path.join("..", "sequences", g + ".txt.fa")
+
+for g in genes:
+    filename = os.path.join("..", "sequences", g + ".txt.fa")  # this never fails, so it is outside the try-except
+    try:
+        # -- Create a Null sequence
+        s = Seq()
         s.read_fasta(filename)  # -- Initialize the null seq with the given file in fasta format
 
         # -- Send a message to the server
@@ -32,15 +36,14 @@ try:
         response = colored(c.talk(msg), "green")
         print(f"{response}\n")
 
-        str_sequence = str(s)
+        str_sequence = str(s)  # or str_sequence = f"{s}" or s.__str__(), you call the str method
         msg2 = colored(str_sequence, "blue")
         print(f"To Server: {msg2}")
         response = colored(c.talk(msg2), "green")
         print(f"{response}\n")
 
-
-except FileNotFoundError:
-    print(f"[ERROR]: file '{filename}' not found")
+    except FileNotFoundError:
+        print(f"[ERROR]: file '{filename}' not found")
 
 
 
