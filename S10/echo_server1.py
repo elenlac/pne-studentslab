@@ -1,4 +1,7 @@
 import socket
+from termcolor import *
+
+"""An echo server is a server that responds with the same message sent by the client."""
 
 # Configure the Server's IP and PORT
 PORT = 8080
@@ -47,13 +50,13 @@ while True:
 
         # -- We decode it for converting it
         # -- into a human-readable string
-        msg = msg_bytes.decode()
+        msg = colored(msg_bytes.decode(), "green")
 
         # -- Print the received message
         print(f"Message received: {msg}")
 
         # -- Send a response message to the client
-        response = "HELLO. I am the Happy Server :-)\n"
+        response = f"ECHO: {msg}\n"
 
         # -- The message has to be encoded into bytes
         client_socket.send(response.encode())

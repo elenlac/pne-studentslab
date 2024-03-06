@@ -1,7 +1,7 @@
 import socket
 
 # Write here the correct parameter for connecting to the Teacher's server
-SERVER_PORT = 8081  # it is the port that our client will connect to
+SERVER_PORT = 8082  # it is the port that our client will connect to
 SERVER_IP = "127.0.0.1"  # it is the ip that our client will connect to
 
 

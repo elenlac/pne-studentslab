@@ -17,11 +17,12 @@ PORT2 = 8081
 c1 = Client(IP, PORT1)
 c2 = Client(IP, PORT2)
 
-# -- Create a Null sequence
-s = Seq()
 
+filename = os.path.join("..", "sequences", "FRAT1" + ".txt.fa")
 try:
-    filename = os.path.join("..", "sequences", "FRAT1" + ".txt.fa")
+    # -- Create a Null sequence
+    s = Seq()
+
     s.read_fasta(filename)
 
     print(f"Gene FRAT1: {s}")
