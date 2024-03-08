@@ -38,6 +38,3 @@ class Client:  # represents a client in a server-client model
 
         return response
 
-
-
-# update

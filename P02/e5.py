@@ -5,6 +5,7 @@ from termcolor import *
 
 practice = 2
 exercise = 5
+number_of_bases = 10
 
 print(f"-----| Practice {practice}, Exercise {exercise} |------")
 
@@ -25,31 +26,28 @@ try:
     s = Seq()
 
     s.read_fasta(filename)
-
     print(f"Gene {g}: {s}")
 
-    msg = colored(f"Sending {g} Gene to the server, in fragments of 10 bases...", "green")
+    msg = colored(f"Sending {g} Gene to the server, in fragments of {number_of_bases} bases...", "green")
     response = c.talk(msg)
 
     start = 0
-    end = 10
+    end = number_of_bases
     number_fragments = 5
+    s_str = str(s)
+
     for i in range(number_fragments):  # it repeats 5 times in this case, goes from 0 to number of fragments
-        f = str(s)[start:end]
-        start += 10
-        end += 10
-        fragment = colored(f"Fragment {i+1}: {f}", "green")
-        print(fragment)
-        response1 = c.talk(fragment)
+        f = s_str[start:end]  # we first call the str method, then we slice the sequence [0:9]
+        msg = colored(f"Fragment {i+1}: {f}", "green")
+        print(msg)
+        response = c.talk(msg)
+
+        start += number_of_bases
+        end += number_of_bases
 
     """
-    number_fragments = 5
-    number_bases = 10 
-    
     for i in range(1, number_fragments + 1):
         print(f"Fragment {i+1}: {f}")
-    
-    
     """
 
 
@@ -57,4 +55,3 @@ except FileNotFoundError:
     print(f"[ERROR]: file '{filename}' not found")
 
 
-# update

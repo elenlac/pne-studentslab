@@ -33,10 +33,10 @@ while True:
         # -- Close the listening socket
         listening_socket.close()
 
-        # -- Exit!
+        # -- Exit!, it first exits the infinite loop and then terminates the whole program
         exit()
 
-    # -- Execute this part if there are no errors
+    # -- Execute this part if there are no errors, it the exception KeyboardInterrupt is not executed
     else:
 
         print("A client has connected to the server!")
@@ -56,7 +56,7 @@ while True:
         response = "HELLO. I am the Happy Server :-)\n"
 
         # -- The message has to be encoded into bytes
-        client_socket.send(response.encode())
+        client_socket.send(response.encode())  # works as str.encode(response)
 
         # -- Close the data socket
         client_socket.close()
