@@ -1,3 +1,4 @@
+"""It is a copy of the Client0 file from practice 2"""
 import socket
 
 

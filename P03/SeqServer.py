@@ -6,6 +6,7 @@ import os
 IP = "127.0.0.1"
 PORT = 8080
 GENES = ["ADA", "FRAT1", "FXN", "RNU6_269P", "U5"]
+BASES = ["A", "C", "T", "G"]
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -30,6 +31,7 @@ try:
         response = None  # in the first place, response is none, but when we get into "if" it gets a value
         if command == "PING":
             response = "OK!\n"
+
         elif command == "GET":
             n = int(slices[1])  # we get the position of the second element given by the client: THE NUMBER OF THE GENE
             gene = GENES[n]  # according to the number given, we locate the gene of the GENE list
@@ -37,8 +39,35 @@ try:
             s = Seq()
             filename = os.path.join("..", "sequences", gene + ".txt.fa")  # build the name of the file
             s.read_fasta(filename)
-
             response = str(s)  # return our object as a string
+
+        elif command == "INFO":
+            seq = str(slices[1])
+            s = Seq(seq)
+            response = f"Sequence: {s}\nTotal length: {s.len()}"
+            for b in BASES:
+                percentage = ((s.count_base(b) / s.len()) * 100)
+                percentage_rounded = round(percentage, 1)
+                response += f"\n {b}: {s.count_base(b)} ({percentage_rounded}%)"
+
+        elif command == "COMP":
+            seq = str(slices[1])
+            s = Seq(seq)
+            response = str(s.complement())
+
+        elif command == "REV":
+            seq = str(slices[1])
+            s = Seq(seq)
+            response = str(s.reverse())
+
+        elif command == "GENE":
+            name = str(slices[1])
+
+            if name in GENES:
+                s = Seq()
+                filename = os.path.join("..", "sequences", name + ".txt.fa")  # build the name of the file
+                s.read_fasta(filename)
+                response = str(s)
 
         print(response)
         response_bytes = response.encode()
