@@ -3,6 +3,11 @@ folder = "../sequences/"  # with the 2 dots the program goes outside P00 and loo
 filename = "U5.txt.fa"
 sequence = seq_read_fasta(folder + filename)
 
+""" ANOTHER WAY TO DO IT THAT WORKS FOR ANY OPERATIVE SYSTEM
+import os
+filename = os.path.join("..", "sequences", GENE + ".txt.fa")
+"""
+
 print("DNA file:", filename)
-print("The first 20 bases are:", sequence[:20])
+print(f"The first 20 bases are:\n{sequence[:20]}")
 

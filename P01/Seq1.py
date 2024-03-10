@@ -1,15 +1,17 @@
 """This file is our module, that will be imported in all the exercises"""
 
+
 def valid_bases(strbases):
     valid = True
     for b in strbases:
-        if b not in Seq.bases_list:  # the Seq in front indicates that bases_list is a class attribute
+        if b not in Seq.BASES:  # the Seq in front indicates that bases_list is a class attribute
             valid = False
             break  # you exit the for loop
     return valid
 
+
 class Seq:
-    bases_list = ["A", "C", "T", "G"]  # list with the bases of a DNA sequence (class attribute or property or static)
+    BASES = ["A", "C", "T", "G"]  # list with the bases of a DNA sequence (class attribute or property or static)
 
     def __init__(self, strbases=None):
         if strbases is None or len(strbases) == 0:  # the same as strbases == 0
@@ -46,7 +48,7 @@ class Seq:
     def count(self):  # as we use count_base, in this function we don't need to check if the sequence is valid
         bases_dict = {}
 
-        for b in Seq.bases_list:  # b acting as each one of the bases of our list of valid bases(class property)
+        for b in Seq.BASES:  # b acting as each one of the bases of our list of valid bases(class property)
             bases_dict[b] = self.count_base(b)  # the value of each one of the keys(b) will be their individual count
         return bases_dict
 
@@ -78,7 +80,7 @@ class Seq:
         file_content = Path(filename).read_text()
         lines = file_content.splitlines()
         body = lines[1:]
-
+        # "".join(body) is the same as the following for loop
         dna_sequence = ""
         for line in body:
             dna_sequence += line  # dna_sequence = dna_sequence + line
@@ -86,13 +88,10 @@ class Seq:
 
     def max_base(self):
         bases_dict = {}
-        for b in Seq.bases_list:
+        for b in Seq.BASES:
             bases_dict[b] = self.count_base(b)
 
         most_frequent_base = max(bases_dict, key=bases_dict.get)
         # the maximum is determined based on the values in the dictionary, but the key is the one returned
 
         return most_frequent_base
-
-
-#  update

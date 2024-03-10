@@ -1,19 +1,18 @@
 from Seq0 import *
 print("-----| Exercise 4 |------")
 
-genes = ["U5", "ADA", "FRAT1", "FXN"]  # list with the names of the Genes
-bases = ["A", "C", "T", "G"]  # list with the names of the bases
+genes = ["U5", "ADA", "FRAT1", "FXN"]
+bases = ["A", "C", "T", "G"]
 
-for g in genes:  # for loop for iterating over the 4 genes
-
-    # fist we find the files
+for g in genes:
     folder = "../sequences/"
     filename = g + ".txt.fa"
     file = folder + filename
-    sequence = seq_read_fasta(file)  # we apply this function for the sequence to be in one line
+    sequence = seq_read_fasta(file)
 
-    print("Gene", str(g) + ":")  # inside this loop to print the proper gene name once (not for every base count)
+    print(f"Gene {str(g)}:")  # inside THIS loop to print the gene name once (not for every base count)
 
     for b in bases:  # for loop for iterating over the 4 bases that we can find in each gene
-        base_count = seq_count_base(sequence, b)  # we apply our new function
-        print(" ", b + ":", base_count)  # inside this loop ensuring it prints the counts for each base
+        base_count = seq_count_base(sequence, b)
+        print(f"\b {b}: {base_count}")  # inside THIS loop ensuring it prints the counts for each base
+    print("\n")

@@ -1,14 +1,12 @@
 from Seq0 import *
 print("-----| Exercise 6 |------")
 
-g = "U5"
+g = "U5"  # as we only have one gene, we don't need to do a for loop
+n = 20
 
-# fist we find the file
 folder = "../sequences/"
 filename = g + ".txt.fa"
 file = folder + filename
-sequence = seq_read_fasta(file)  # we apply this function for the sequence to be in one line
+sequence = seq_read_fasta(file)
 
-reverse = seq_reverse(sequence, 20)  # we apply our new function
-
-print("Gene", str(g), "\n", "Fragment" + ":", sequence[:20], "\n", "Reverse" + ":", reverse)
+print(f"Gene {str(g)}\nFragment: {sequence[:n]}\nReverse: {seq_reverse(sequence, n)}")
