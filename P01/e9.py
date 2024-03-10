@@ -16,5 +16,3 @@ try:
     print(f"Sequence: (Length: {s.len()}) {s} \n Bases: {s.count()} \n Rev: {s.reverse()} \n Comp: {s.complement()}")
 except FileNotFoundError:
     print(f"[ERROR]: file '{filename}' not found")
-
-# update

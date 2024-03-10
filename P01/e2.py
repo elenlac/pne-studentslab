@@ -5,9 +5,6 @@ exercise = 2
 
 print(f"-----| Practice {practice} , Exercise {exercise} |------")
 
-"""We will manage three types of sequences: Valid, Invalid and Null:
-- Null: Empty sequence "". It has no bases at all"""
-
-seq_list = [Seq(), Seq("ACTGA")]
-for i, seq in enumerate(seq_list):
+seq_list = [Seq(), Seq("TATAC")]  # creating a NULL and VALID sequence
+for i, seq in enumerate(seq_list):  # creates a new list of tuples such that: [(0,s1), (1, s2)]
     print(f"Sequence {i+1}: {seq}")  # +1 because it starts on 0 by default

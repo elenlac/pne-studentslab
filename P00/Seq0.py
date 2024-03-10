@@ -95,4 +95,3 @@ for b in seq:  # b represents each different base (key) in our dictionary
 
     return most_frequent_base
 """
-
