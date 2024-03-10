@@ -21,5 +21,3 @@ response = c.talk("Testing!!!")
 print(f"Response:\n")
 print(f"{response}")
 
-
-#update

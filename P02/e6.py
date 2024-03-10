@@ -31,7 +31,7 @@ try:
     print(f"Gene FRAT1: {s}")
 
     msg = colored(f"Sending FRAT1 Gene to the server, in fragments of {number_of_bases} bases...", "green")
-    reponse1 = c1.talk(msg)
+    response1 = c1.talk(msg)
     response2 = c2.talk(msg)
 
     start = 0
@@ -40,8 +40,8 @@ try:
     s_str = str(s)
 
     for i in range(1, number_fragments + 1):
-        f = s_str[start:end]
-        msg = colored(f"Fragment {i}: {f}", "green")
+        fragment = s_str[start:end]
+        msg = colored(f"Fragment {i}: {fragment}", "green")
         print(msg)
 
         if i % 2 == 0:  # if the number is even then we operate in the server2

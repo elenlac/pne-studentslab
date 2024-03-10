@@ -1,6 +1,9 @@
-class Client:  # represents a client in a server-client model
-    def __init__(self, server_ip: str, server_port: int):  # ip as a string and port as an integer
-        # this method stores the address to which the client connects:
+"""This file is our module, that will be imported in all the exercises"""
+
+
+class Client:  # represents a client(sends messages to the server) in a server-client model
+    def __init__(self, server_ip: str, server_port: int):  # IP as a string and PORT as an integer
+        # the constructor stores the address to which the client connects:
         self.server_ip = server_ip
         self.server_port = server_port
 
@@ -12,7 +15,7 @@ class Client:  # represents a client in a server-client model
         print("OK!")
 
     """   
-    @staticmethod  # methods within a class that have no access to anything else in the class (attributes of the object)
+    @staticmethod  # methods within a class that have no access to anything else in the class
     def ping():  
         print("OK!")
         
@@ -37,6 +40,3 @@ class Client:  # represents a client in a server-client model
         client_socket.close()  # we close the socket (finish communication) and return the response of the server
 
         return response
-
-
-

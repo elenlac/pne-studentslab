@@ -39,12 +39,13 @@ for g in genes:
         str_sequence = str(s)  # or str_sequence = f"{s}" or s.__str__(), you call the str method
         msg2 = colored(str_sequence, "blue")
         print(f"To Server: {msg2}")
+
+        print(f"From Server:\n")
         response = colored(c.talk(msg2), "green")
         print(f"{response}\n")
 
     except FileNotFoundError:
         print(f"[ERROR]: file '{filename}' not found")
 
-# update
 
 

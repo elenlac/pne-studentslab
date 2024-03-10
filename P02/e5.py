@@ -37,8 +37,8 @@ try:
     s_str = str(s)
 
     for i in range(number_fragments):  # it repeats 5 times in this case, goes from 0 to number of fragments
-        f = s_str[start:end]  # we first call the str method, then we slice the sequence [0:9]
-        msg = colored(f"Fragment {i+1}: {f}", "green")
+        fragment = s_str[start:end]  # we first call the str method, then we slice the sequence [0:9]
+        msg = colored(f"Fragment {i+1}: {fragment}", "green")
         print(msg)
         response = c.talk(msg)
 
@@ -47,7 +47,7 @@ try:
 
     """
     for i in range(1, number_fragments + 1):
-        print(f"Fragment {i+1}: {f}")
+        print(f"Fragment {i}: {f}")
     """
 
 

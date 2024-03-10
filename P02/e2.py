@@ -15,5 +15,3 @@ c = Client(IP, PORT)
 # -- Test the str method
 print(c)
 
-
-# update

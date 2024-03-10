@@ -1,27 +1,29 @@
 """This file is our module, that will be imported in all the exercises"""
-"""It is a copy of the Seq 1 file from practice 1"""
+
+# STRBASES is a string that will be stored in every object of class Seq that we use to represent a sequence
 
 
 def valid_bases(strbases):
     valid = True
     for b in strbases:
-        if b not in Seq.bases_list:  # the Seq in front indicates that bases_list is a class attribute
+        if b not in Seq.BASES:  # the Seq in front indicates that bases_list is a class attribute
             valid = False
-            break  # you exit the for loop
+            break  # you exit the for loop, but not the entire function
     return valid
 
 
 class Seq:
-    bases_list = ["A", "C", "T", "G"]  # list with the bases of a DNA sequence (class attribute or property or static)
+    BASES = ["A", "C", "T", "G"]  # list with the bases of a DNA sequence (class attribute or property or static)
+    COMPLEMENTS = {"A": "T", "T": "A", "C": "G", "G": "C"}  # dictionary with complement base of each of the og bases
 
     def __init__(self, strbases=None):
-        if strbases is None or len(strbases) == 0:  # the same as strbases == 0
+        if strbases is None or len(strbases) == 0:  # the same as strbases == 0 --> empty
             self.strbases = "NULL"
             print("NULL sequence created")
-        elif valid_bases(strbases):
+        elif valid_bases(strbases):  # if the seq/strbases contains the same bases as in BASES, then it is VALID
             self.strbases = strbases
             print("New sequence created!")
-        else:
+        else:  # if it is not VALID, and it is not NULL, then it is INCORRECT/INVALID
             self.strbases = "ERROR"
             print("INVALID sequence!")
 
@@ -32,7 +34,7 @@ class Seq:
         if self.strbases == "NULL" or self.strbases == "ERROR":
             length = 0
             # return 0
-            # return len(self.strbases)
+        # return len(self.strbases)
         else:
             length = len(self.strbases)
         return length
@@ -41,7 +43,7 @@ class Seq:
         if self.strbases == "NULL" or self.strbases == "ERROR":
             count = 0
             # return 0
-            # return self.strbases.count(base)
+        # return self.strbases.count(base)
         else:
             count = self.strbases.count(base)
         return count
@@ -49,7 +51,7 @@ class Seq:
     def count(self):  # as we use count_base, in this function we don't need to check if the sequence is valid
         bases_dict = {}
 
-        for b in Seq.bases_list:  # b acting as each one of the bases of our list of valid bases(class property)
+        for b in Seq.BASES:  # b acting as each one of the bases of our list of valid bases(class property BASES)
             bases_dict[b] = self.count_base(b)  # the value of each one of the keys(b) will be their individual count
         return bases_dict
 
@@ -63,16 +65,14 @@ class Seq:
         return reverse
 
     def complement(self):
-        complements_dict = {"A": "T", "T": "A", "C": "G", "G": "C"}
-        complementary_seq = ""
-
         if self.strbases == "NULL":
             complementary_seq = "NULL"
         elif self.strbases == "ERROR":
             complementary_seq = "ERROR"
         else:
+            complementary_seq = ""
             for b in self.strbases:
-                complementary_seq += complements_dict[b]
+                complementary_seq += Seq.COMPLEMENTS[b]
         return complementary_seq
 
     def read_fasta(self, filename):
@@ -81,19 +81,20 @@ class Seq:
         file_content = Path(filename).read_text()
         lines = file_content.splitlines()
         body = lines[1:]
-
-        dna_sequence = ""
+        # "".join(body) is the same as the following for loop
+        self.strbases = ""
         for line in body:
-            dna_sequence += line  # dna_sequence = dna_sequence + line
-        self.strbases = dna_sequence
+            self.strbases += line  # dna_sequence = dna_sequence + line
 
     def max_base(self):
-        bases_dict = {}
-        for b in Seq.bases_list:
-            bases_dict[b] = self.count_base(b)
-
-        most_frequent_base = max(bases_dict, key=bases_dict.get)
-        # the maximum is determined based on the values in the dictionary, but the key is the one returned
-
-        return most_frequent_base
+        if self.strbases == "NULL" or self.strbases == "ERROR":
+            return None
+        max_base = ""
+        max_count = 0
+        for base in Seq.BASES:
+            count = self.count_base(base)
+            if count > max_count:
+                max_count = count
+                max_base = base
+        return max_base
 
