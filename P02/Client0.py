@@ -15,7 +15,7 @@ class Client:  # represents a client(sends messages to the server) in a server-c
         print("OK!")
 
     """   
-    @staticmethod  # methods within a class that have no access to anything else in the class
+    @staticmethod  # a method that belongs to a class, not its instances.
     def ping():  
         print("OK!")
         

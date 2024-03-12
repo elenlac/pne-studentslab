@@ -23,7 +23,7 @@ try:
     serversocket.listen(MAX_OPEN_REQUESTS)  # listen allows clients to connect the server, "the tunnel is opened"
     # plus, only 5 clients will be listened/connected to the server at the same time
 
-    while True:  # infinite loop that accepts connections from outside
+    while True:  # infinite loop that accepts connections from outside, from clients
         print(f"Waiting for connections at {IP}, {PORT}")
         (clientsocket, address) = serversocket.accept()
         # accept allows the socket accept the connexion of a socket,
