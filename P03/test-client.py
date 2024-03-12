@@ -44,4 +44,3 @@ for g in GENES:
     print(f"GENE {g}")
     response = c.talk(f"GENE {g}")
     print(f"{response}\n")
-
