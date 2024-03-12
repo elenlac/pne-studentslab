@@ -4,7 +4,7 @@ from Seq3 import Seq
 import os
 
 IP = "127.0.0.1"
-PORT = 8080
+PORT = 8081
 GENES = ["U5", "ADA", "FRAT1", "FXN", "RNU6_269P"]  # here we are using seq from files, but we could use others
 BASES = ["A", "C", "T", "G"]
 
