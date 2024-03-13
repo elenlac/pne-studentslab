@@ -42,6 +42,19 @@ try:
             s.read_fasta(filename)
             response = str(s)  # return our object as a string
 
+            """ WE COULD ALSO DO IT WITH OTHER SEQ: 
+            SEQUENCES = ["ACCTCCTCTCCAGCAATGCCAACCCCAGTCCAGGCCCCCATCCGCCCAGGATCTCGATCA", 
+            "AAAAACATTAATCTGTGGCCTTTCTTTGCCATTTCCAACTCTGCCACCTCCATCGAACGA", 
+            "CAAGGTCCCCTTCTTCCTTTCCATTCCCGTCAGCTTCATTTCCCTAATCTCCGTACAAAT", 
+            "CCCTAGCCTGACTCCCTTTCCTTTCCATCCTCACCAGACGCCCGCATGCCGGACCTCAAA", 
+            "AGCGCAAACGCTAAAAACCGGTTGAGTTGACGCACGGAGAGAAGGGGTGTGTGGGTGGGT"]
+           
+            n = int(slices[1])
+            bases = SEQUENCES[n]
+            s = Seq(bases)
+            response = str(s
+            """
+
         elif command == "INFO":
             seq = slices[1]
             s = Seq(seq)  # our strbases will be the seq

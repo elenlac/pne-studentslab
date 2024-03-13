@@ -101,7 +101,7 @@ class Seq:
     def info(self):  # NEW METHOD FOR P03
         s = f"Sequence: {self.strbases}\nTotal length: {self.len()}"
         for base in Seq.BASES:
-            if self.len() == 0:
+            if self.len() == 0:  # we discard the invalid and null sequences
                 percentage = 0
             else:
                 percentage = round((self.count_base(base) * 100) / self.len(), 1)

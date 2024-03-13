@@ -16,8 +16,10 @@ class Client:
     def talk(self, msg):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((self.server_ip, self.server_port))
+
         msg_bytes = str.encode(msg)
         client_socket.send(msg_bytes)
+
         response_bytes = client_socket.recv(2048)
         response = response_bytes.decode()
         client_socket.close()
