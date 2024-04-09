@@ -20,7 +20,11 @@ def process_client(client_socket):
         resource = slices[1]
         version = slices[2]
 
-        if resource == "/info/A":
+        if resource == "/":
+            filename = os.path.join("html", "index.html")
+            body = Path(filename).read_text()
+            status_line = "HTTP/1.1 200 OK\n"
+        elif resource == "/info/A":
             filename = os.path.join("html", "A.html")
             body = Path(filename).read_text()
             status_line = "HTTP/1.1 200 OK\n"
@@ -28,8 +32,16 @@ def process_client(client_socket):
             filename = os.path.join("html", "C.html")
             body = Path(filename).read_text()
             status_line = "HTTP/1.1 200 OK\n"
+        elif resource == "/info/G":
+            filename = os.path.join("html", "G.html")
+            body = Path(filename).read_text()
+            status_line = "HTTP/1.1 200 OK\n"
+        elif resource == "/info/T":
+            filename = os.path.join("html", "T.html")
+            body = Path(filename).read_text()
+            status_line = "HTTP/1.1 200 OK\n"
         else:
-            filename = os.path.join("html", "index.html")
+            filename = os.path.join("html", "error.html")
             body = Path(filename).read_text()
             status_line = "HTTP/1.1 404 Not found\n"
 
@@ -48,7 +60,7 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.bind((IP, PORT))
 server_socket.listen()
 
-print("SEQ Server configured!")
+print("DNA Bases Server configured!")
 
 try:
     while True:
