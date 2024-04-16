@@ -19,19 +19,19 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             contents = Path(filename).read_text()
             self.send_response(200)
         elif resource == "/info/A.html":
-            filename = os.path.join("html","info","A.html")
+            filename = os.path.join("html", "info", "A.html")
             contents = Path(filename).read_text()
             self.send_response(200)
         elif resource == "/info/C.html":
-            filename = os.path.join("html","info","C.html")
+            filename = os.path.join("html", "info", "C.html")
             contents = Path(filename).read_text()
             self.send_response(200)
         elif resource == "/info/G.html":
-            filename = os.path.join("html","info","G.html")
+            filename = os.path.join("html", "info", "G.html")
             contents = Path(filename).read_text()
             self.send_response(200)
         elif resource == "/info/T.html":
-            filename = os.path.join("html","info","T.html")
+            filename = os.path.join("html", "info", "T.html")
             contents = Path(filename).read_text()
             self.send_response(200)
         else:  # client has asked for other web page different from the predefined ones
