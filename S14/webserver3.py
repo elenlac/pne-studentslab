@@ -24,7 +24,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         termcolor.cprint("  " + self.requestline, 'green')
         # self.requestline attribute from BaseHTTP mother class, it obtains a value when received the GET method/request
 
-        # Print the command received (value should ALWAYS be "GET" in this case)
+        # Print the command/ METHOD received (value should ALWAYS be "GET" in this case)
         print("  Command: " + self.command)
         # self.command attribute from BaseHTTP mother class, it obtains a value when received the GET method/request
 

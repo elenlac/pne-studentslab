@@ -20,6 +20,7 @@ def process_client(client_socket):
         resource = slices[1]
         version = slices[2]
 
+        # DEPENDING ON THE RESOURCE, THE SERVER WILL DO THE FOLLOWING: FINAL VERSION OF THE WEB SERVER
         if resource == "/":
             filename = os.path.join("html", "index.html")
             body = Path(filename).read_text()

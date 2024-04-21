@@ -19,6 +19,7 @@ def process_client(client_socket):
     resource = slices[1]
     version = slices[2]
 
+    # DEPENDING ON THE RESOURCE, THE SERVER WILL DO THE FOLLOWING: DIFFERENCE IS THAT WE NOW ADD THE ERROR PAGE
     if resource == "/info/A":
         filename = os.path.join("html", "A.html")
         body = Path(filename).read_text()

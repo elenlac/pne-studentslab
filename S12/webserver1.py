@@ -5,8 +5,8 @@ IP = "127.0.0.1"
 PORT = 8080
 
 
+# HERE WE PARSE THE CLIENT'S REQUEST
 def process_client(client_socket):
-    # HERE WE PARSE THE CLIENT'S REQUEST
     request_bytes = client_socket.recv(2048)  # we store the bytes of the request made by the client (max 2048)
     request = request_bytes.decode()  # "Get / HTTP/1.1...."
     print("Message FROM CLIENT: ")
@@ -17,7 +17,7 @@ def process_client(client_socket):
 
     # SERVER BUILDS A RESPONSE MESSAGE, NOW IT KNOWS HOW TO TREAT THE HTTP PROTOCOL
     body = "Hello from my first web server!\n"  # plain text, not html, this property is determined in the first field
-    status_line = "HTTP/1.1 200 OK\n"  # contains
+    status_line = "HTTP/1.1 200 OK\n"
     header = "Content-Type: text/plain\n"  # we are putting two fields
     header += f"Content-Length: {len(body)}\n"  # one character occupies one byte, specifies how much space it takes
     response = f"{status_line}{header}\n{body}"  # we put the mandatory blank line

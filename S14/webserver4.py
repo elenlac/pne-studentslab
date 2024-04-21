@@ -21,11 +21,10 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         # IN this simple server version:
         # We are NOT processing the client's request
-        # It is a happy server: It always returns a message saying
-        # that everything is ok
+        # It is a happy server: It always returns a message saying that everything is ok
 
-        # Message to send back to the client from the server. NOW IS SENDS A RESPONSE!!!!
-        contents = "I am the happy server! :-)"
+        # Message to send back to the client from the server. NOW IT SENDS A RESPONSE!!!!
+        body = "I am the happy server! :-)"
 
         # Generating the response message. METHOD since there is a (), INHERITED from BaseHTTP that I can use directly
         self.send_response(200)
@@ -33,13 +32,13 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         # Define the content-type and content-length header. ANOTHER METHOD, called twice
         self.send_header('Content-Type', 'text/plain')  # key-value
-        self.send_header('Content-Length', len(contents.encode()))  # transform string to bytes and count them
+        self.send_header('Content-Length', len(body.encode()))  # transform string to bytes and count them
 
         # The header is finished, to stop constructing headers it adds a blank line to separate the header from the body
         self.end_headers()
 
         # Send the response message: takes the response, encodes to bytes and sends the bytes through the client socket
-        self.wfile.write(contents.encode())  # write file: output path from server to client
+        self.wfile.write(body.encode())  # write file: output path from server to client
 
         return
 
