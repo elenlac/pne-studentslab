@@ -7,11 +7,9 @@ jsonstring = Path("people-3.json").read_text()
 
 # Create the object person from the json string
 person = json.loads(jsonstring)
+# Person is now a DICTIONARY.
 
-# Person is now a dictionary. We can read the values
-# associated to the fields 'Firstname', 'Lastname' and 'age'
-
-# Print the information on the console, in colors
+# Read the values associated to the fields(KEYS): 'Firstname', 'Lastname' and 'age' and directly print (no variables)
 print()
 termcolor.cprint("Name: ", 'green', end="")
 print(person['Firstname'], person['Lastname'])
@@ -25,6 +23,7 @@ phoneNumbers = person['phoneNumber']
 termcolor.cprint("Phone numbers: ", 'green', end='')
 print(len(phoneNumbers))
 
+"""DIFFERENCE FROM TEST-JSON-2"""
 # Print all the numbers
 for i, dictnum in enumerate(phoneNumbers):
     termcolor.cprint("  Phone " + str(i + 1) + ": ", 'blue')
