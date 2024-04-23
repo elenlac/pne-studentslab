@@ -98,24 +98,24 @@ class Seq:
                 max_base = base
         return max_base
 
-    def info(self):  # NEW METHOD FOR P03
-        s = f"Sequence: {self.strbases}\nTotal length: {self.len()}"
+    def info(self):
+        s = f"Total length: {self.len()}\n"
         for base in Seq.BASES:
             if self.len() == 0:  # we discard the invalid and null sequences
                 percentage = 0
             else:
                 percentage = round((self.count_base(base) * 100) / self.len(), 1)
-            s += f"\n {base}: {self.count_base(base)} ({percentage}%)"
+            s += f"{base}: {self.count_base(base)} ({percentage}%)\n"
 
         return s
 
     """ANOTHER WAY TO DO IT IS USING THE METHOD COUNT():  base=key and count=value in our dictionary (self.count())
-    s = f"Sequence: {self.strbases}\nTotal length: {self.len()}"
+    s = f"Total length: {self.len()}\n"
     for base, count in self.count().items():  # we iterate over the items of our dict
         if self.len() == 0 :
             percentage = 0
         else:
             percentage = (count * 100) / self.len()
-        s += f"\n {base}: {count} ({percentage:.1f}%)\n"  # :.1f TAKES THE PERCENTAGE WITH FORMAT OF ONE DECIMAL
+        s += f"{base}: {count} ({percentage:.1f}%)\n"  # :.1f TAKES THE PERCENTAGE WITH FORMAT OF ONE DECIMAL
     return s
     """

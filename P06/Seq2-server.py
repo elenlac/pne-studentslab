@@ -63,17 +63,15 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         elif resource == "/get":
             contents, code = handle_get(arguments)  # the handle_get function returns two values, a duple
             # content=str web page sent as a response from server and the code=status code integer
-            self.send_response(code)
         elif resource == "/gene":
             try:
                 gene_name = arguments['gene_name'][0]
                 contents = read_html_template("gene.html")
-                file_name = os.path.join("..", "sequences", gene_name + ".txt")
+                file_name = os.path.join("..", "sequences", gene_name + ".txt.fa")
                 s = Seq()  # null sequence
                 s.read_fasta(file_name)  # we give the objet a value
                 context = {'gene_name': gene_name, 'sequence': str(s)}  # __str__ method is called
                 contents = contents.render(context=context)
-                self.send_response(HTTPStatus.OK)
             except (KeyError, IndexError, FileNotFoundError):
                 file_path = os.path.join(HTML_FOLDER, "error.html")
                 contents = Path(file_path).read_text()
@@ -81,14 +79,12 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         elif resource == "/operation":
             try:
                 bases = arguments['bases'][0]
-                op = arguments['op'][0]  # lower()
-                file_path = os.path.join(HTML_FOLDER, "operation.html")
-                contents = Path(file_path).read_text()
-                contents = jinja2.Template(contents)
-                s = Seq(bases)
+                op = arguments['op'][0]  # we could use lower() and make it in lower case if the user changes url
+                contents = read_html_template("operation.html")
+                s = Seq(bases)  # object of the class Seq that contains the seq given by the user. COULD BE CONTROLLED
                 if op in OPERATIONS:
                     if op == "info":
-                        result = s.info().replace("\n", "<br><br>")
+                        result = s.info().replace("\n", "<br><br>")  # as we are in html we change the line break
                     elif op == "comp":
                         result = s.complement()
                     else:  # elif op == "rev":
