@@ -26,7 +26,7 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         termcolor.cprint(self.requestline, 'green')
 
-        url_path = urlparse(self.path)
+        url_path = urlparse(self.path)  # parses/analyzes/slices the route received when the client performs a request
         print(f"URL Path: {url_path}")
         # URL Path: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
         resource = url_path.path  # url path is an object of the class ParseResult that contains attributes like path
