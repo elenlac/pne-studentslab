@@ -11,16 +11,15 @@ print(f"\nConnecting to server: {SERVER}:{PORT}\n")
 # Connect with the server
 conn = http.client.HTTPConnection(SERVER, PORT)
 
-# -- Send the request message, using the GET method. We are
-# -- requesting the main page (/)
+# -- Send the request message, using the GET method. We are requesting the main page (/)
 try:
-    conn.request("GET", "/listusers")
+    conn.request("GET", "/listusers")  # send()
 except ConnectionRefusedError:
     print("ERROR! Cannot connect to the Server")
     exit()
 
 # -- Read the response message from the server
-r1 = conn.getresponse()
+r1 = conn.getresponse()  # recv()
 
 # -- Print the status line
 print(f"Response received!: {r1.status} {r1.reason}\n")
@@ -28,8 +27,7 @@ print(f"Response received!: {r1.status} {r1.reason}\n")
 # -- Read the response's body
 data1 = r1.read().decode("utf-8")
 
-# -- Create a variable with the data,
-# -- form the JSON received
+# -- Create a variable with the data, form the JSON received
 person = json.loads(data1)
 
 print("CONTENT: ")
@@ -40,10 +38,10 @@ termcolor.cprint("Name: ", 'green', end="")
 print(person['Firstname'], person['Lastname'])
 
 termcolor.cprint("Age: ", 'green', end="")
-print(person['age'])
+print(person['Age'])
 
 # Get the phoneNumber list
-phoneNumbers = person['phoneNumber']
+phoneNumbers = person['PhoneNumbers']
 
 # Print the number of elements int the list
 termcolor.cprint("Phone numbers: ", 'green', end='')

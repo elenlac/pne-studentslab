@@ -34,7 +34,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             code = 200
         elif resource == "/listusers":
             # Read the file
-            contents = Path('people-3.json').read_text()
+            contents = Path('people-e1.json').read_text()
             content_type = 'application/json'  # HERE WE DON'T WORK WITH HTML, we send the client diff. type of content
             code = 200
         else:

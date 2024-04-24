@@ -32,6 +32,6 @@ with socketserver.TCPServer(("", PORT), TestHandler) as httpd:
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("")  # not the same as print()= \n and print("")= empty str that traduces?
+        print("")  # not the same as print()= \n and print("")= empty str that later adds a \n, in console its the same
         print("Stopped by the user")
         httpd.server_close()

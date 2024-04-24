@@ -14,22 +14,22 @@ print()
 termcolor.cprint("Name: ", 'green', end="")
 print(person['Firstname'], person['Lastname'])
 termcolor.cprint("Age: ", 'green', end="")
-print(person['age'])
+print(person['Age'])
 
-# Get the phoneNumber list
-phoneNumbers = person['phoneNumber']
+# Get the phoneNumber list of dicts
+phoneNumbers = person['PhoneNumbers']
 
-# Print the number of elements in the list
+# Print the number of elements in the list (2 dictionaries in this case)
 termcolor.cprint("Phone numbers: ", 'green', end='')
 print(len(phoneNumbers))
 
 """DIFFERENCE FROM TEST-JSON-2"""
 # Print all the numbers
-for i, dictnum in enumerate(phoneNumbers):
+for i, dictnum in enumerate(phoneNumbers):  # we are enumerating a list of DICTS(dictnum), not a list of STR(num)
     termcolor.cprint("  Phone " + str(i + 1) + ": ", 'blue')
 
     # The element num contains 2 fields: number and type
     termcolor.cprint("\t- Type: ", 'red', end='')
-    print(dictnum['type'])
+    print(dictnum['type'])  # we treat the variable dictum as a dict
     termcolor.cprint("\t- Number: ", 'red', end='')
     print(dictnum['number'])

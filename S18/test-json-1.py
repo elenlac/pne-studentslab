@@ -1,18 +1,18 @@
-import json
+import json  # provides tools to work with json format
 import termcolor
 from pathlib import Path
 
-# -- Read the json file AND BECOMES A STR
+# -- Open and read the json file AND BECOMES A STR
 jsonstring = Path("people-1.json").read_text()
 
 # Create the OBJECT person from the json string
-person = json.loads(jsonstring)
+person = json.loads(jsonstring)  # using the module json, we use the method to load the content and traduce into a dict
 # Person is now a DICTIONARY.
 
-# We can read the values associated to the fields(KEYS): 'Firstname', 'Lastname' and 'age'
+# We can read the values associated to the fields(KEYS): 'Firstname', 'Lastname' and 'Age'
 firstname = person['Firstname']
 lastname = person['Lastname']
-age = person['age']
+age = person['Age']
 
 # Print the information on the console, in colors
 print()
