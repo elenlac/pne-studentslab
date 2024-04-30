@@ -11,11 +11,11 @@ import json
 
 PORT = 8080
 HTML_FOLDER = "html"  # optional, since we could have the html files in the same directory as the server
-EMSEMBL_SERVER = "rest.ensembl.org"  # the IP of the server
+ENSEMBL_SERVER = "rest.ensembl.org"  # the IP of the server
 RESOURCE_TO_ENSEMBL_REQUEST = {
     '/listSpecies': {'resource': "/info/species", 'params': "content-type=application/json"},
     '/karyotype': {'resource': "/info/assembly", 'params': "content-type=application/json"},
-    '/contentLength': {'resource': "/info/assembly", 'params': "content-type=application/json"}
+    '/chromosomeLength': {'resource': "/info/assembly", 'params': "content-type=application/json"}
 }  # dict that contains a resource/endpoint as key with a dict as value. we state what we will request to ensembl
 RESOURCE_NOT_AVAILABLE_ERROR = "Resource not available"
 ENSEMBL_COMMUNICATION_ERROR = "Error in communication with the Ensembl server"
@@ -59,7 +59,7 @@ def handle_error(endpoint, message):  # endpoint: resource received from the use
 def list_species(endpoint, parameters):
     request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]  # storing the dict what contains the keys "resource", "params"
     url = f"{request['resource']}?{request['params']}"
-    error, data = server_request(EMSEMBL_SERVER, url)  # we use our function
+    error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
     if not error:
         limit = None  # REMEMBER LIMIT IS OPTIONAL("None" as default), so if we receive it:
         if 'limit' in parameters:
@@ -83,11 +83,12 @@ def list_species(endpoint, parameters):
         code = HTTPStatus.SERVICE_UNAVAILABLE  # we change code to "503"
     return code, contents  # returns a duple
 
+
 def karyotype(endpoint, parameters):
     request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
     specie = parameters['species'][0]
     url = f"{request['resource']}/{specie}?{request['params']}"
-    error, data = server_request(EMSEMBL_SERVER, url)  # we use our function
+    error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
     if not error:
         """print(data)"""
 
@@ -104,20 +105,25 @@ def karyotype(endpoint, parameters):
     return code, contents
 
 
-def chromosomeLength(endpoint, parameters):
+def chromosome_length(endpoint, parameters):
     request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
     specie = parameters['species'][0]
+    user_chromosome = parameters['chromo'][0]
     url = f"{request['resource']}/{specie}?{request['params']}"
-    error, data = server_request(EMSEMBL_SERVER, url)  # we use our function
+    error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
     if not error:
-        print(data)  # chromo inside params
-
-        """WE PARSE THE INFO FROM ENSEMBL"""
+        length = None
+        """print(data)"""
+        chromosomes_list = data['top_level_region']
+        for chromo in chromosomes_list:
+            if chromo['name'] == user_chromosome:
+                length = chromo['length']
         context = {
-            'chromosome': specie,
-            'karyotype': data['karyotype']
+            'specie': specie,
+            'length': length,
+            'chromosomes_list': chromosomes_list
         }
-        contents = read_html_template("chromosome_length.html").render(context=context)
+        contents = read_html_template("chromosome_length1.html").render(context=context)
         code = HTTPStatus.OK
     else:
         contents = handle_error(endpoint, ENSEMBL_COMMUNICATION_ERROR)
@@ -142,7 +148,6 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         code = HTTPStatus.OK  # we establish "200" as default
         content_type = "text/html"
-        contents = ""  # empty str, not filled yet
         if endpoint == "/":  # THIS FILE IS NOT A TEMPLATE, it is a STATIC WEB PAGE since server doesn't fill anything
             file_path = os.path.join(HTML_FOLDER, "index.html")
             contents = Path(file_path).read_text()
@@ -151,7 +156,7 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         elif endpoint == "/karyotype":
             code, contents = karyotype(endpoint, parameters)  # we use our function
         elif endpoint == "/chromosomeLength":
-            code, contents = chromosomeLength(endpoint, parameters)
+            code, contents = chromosome_length(endpoint, parameters)  # we use our function
         else:
             contents = handle_error(endpoint, RESOURCE_NOT_AVAILABLE_ERROR)  # we use our function
             code = HTTPStatus.NOT_FOUND  # we change code to "404"
