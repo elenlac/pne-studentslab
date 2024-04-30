@@ -104,6 +104,27 @@ def karyotype(endpoint, parameters):
     return code, contents
 
 
+def chromosomeLength(endpoint, parameters):
+    request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
+    specie = parameters['species'][0]
+    url = f"{request['resource']}/{specie}?{request['params']}"
+    error, data = server_request(EMSEMBL_SERVER, url)  # we use our function
+    if not error:
+        print(data)  # chromo inside params
+
+        """WE PARSE THE INFO FROM ENSEMBL"""
+        context = {
+            'chromosome': specie,
+            'karyotype': data['karyotype']
+        }
+        contents = read_html_template("chromosome_length.html").render(context=context)
+        code = HTTPStatus.OK
+    else:
+        contents = handle_error(endpoint, ENSEMBL_COMMUNICATION_ERROR)
+        code = HTTPStatus.SERVICE_UNAVAILABLE
+    return code, contents
+
+
 """MAIN PROGRAM"""
 
 socketserver.TCPServer.allow_reuse_address = True
