@@ -33,13 +33,15 @@
 
         <form action="/geneSeq" method="get">
             <p>4) Sequence of a human gene</p>
-            Get a sequence. Select a sequence:
-            <select name="gene">  <!-- remember name is the key and the values would be the different genes-->
-                {% for g in context.genes %} <!--will iterate through the elements of the list GENES -->
-                    <option value={{g}}>{{g}}</option>
-                {% endfor %}
-            </select><br>
-            <input type="submit" value="GENE">
+            <label>Select the gene:</label><input type="text" name="gene"><br>
+            <input type="submit" value="Send">
+        </form>
+        <hr>
+
+        <form action="/geneInfo" method="get">
+            <p>5) Human Gene Info</p>
+            <label>Select the gene:</label><input type="text" name="gene"><br>
+            <input type="submit" value="Send">
         </form>
         <hr>
     </body>

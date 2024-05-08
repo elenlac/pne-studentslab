@@ -17,7 +17,8 @@ RESOURCE_TO_ENSEMBL_REQUEST = {
     '/listSpecies': {'resource': "/info/species", 'params': "content-type=application/json"},
     '/karyotype': {'resource': "/info/assembly", 'params': "content-type=application/json"},
     '/chromosomeLength': {'resource': "/info/assembly", 'params': "content-type=application/json"},
-    '/geneSeq': {'resource': "/sequence/id", 'params': "content-type=application/json"}
+    '/geneSeq': {'resource': "/sequence/id", 'params': "content-type=application/json"},
+    '/geneInfo': {'resource': "/overlap/id", 'params': "content-type=application/json;feature=gene"}
 }  # dict that contains a resource/endpoint as key with a dict as value. we state what we will request to ensembl
 RESOURCE_NOT_AVAILABLE_ERROR = "Resource not available"
 ENSEMBL_COMMUNICATION_ERROR = "Error in communication with the Ensembl server"
@@ -110,19 +111,31 @@ def karyotype(endpoint, parameters):
 
 def chromosome_length(endpoint, parameters):
     request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
-    specie = parameters['species'][0]
-    user_chromosome = parameters['chromo'][0]
+    specie = parameters['species'][0]  # introduced by user
+    user_chromosome = parameters['chromo'][0]  # introduced by user, it is not always an integer!!!
     url = f"{request['resource']}/{specie}?{request['params']}"
     error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
     if not error:
         length = None
-        """print(data)"""
-        chromosomes_list = data['top_level_region']
-        for chromo in chromosomes_list:
-            if chromo['name'] == user_chromosome:
+        print(data)
+        chromosomes_list = data['top_level_region']  # obtain all chromosomes of the specie, it is an array of objects
+        for chromo in chromosomes_list:  # will iterate the list of dicts
+            if chromo['name'] == user_chromosome:  # WE HAVE FOUND THE REQUESTED CHROMOSOME
                 length = chromo['length']
+                break
+
+        """OTHER WAY TO DO IT
+        length = None
+        found = False
+        i = 0  # index starts at 0
+        while not found and i < len(chromosomes_list):  # not found = True
+            chromo = chromosomes_list[i]
+            if chromo['name'] == user_chromosome:  # WE HAVE FOUND THE REQUESTED CHROMOSOME 
+                length = chromo['length']
+                found = True
+            i += 1
+        """
         context = {
-            'specie': specie,
             'length': length,
             'chromosomes_list': chromosomes_list
         }
@@ -134,24 +147,73 @@ def chromosome_length(endpoint, parameters):
     return code, contents
 
 
-def human_gene(endpoint, parameters):
-    request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
-    gene = parameters['gene'][0]
-    url = f"{request['resource']}/{gene}?{request['params']}"
+def get_id(gene):  # petition to ensembl that given a gene we transform it to its identifier id
+    resource = "/homology/symbol/human/" + gene
+    params = 'content-type=application/json;format=condensed'
+    url = f"{resource}?{params}"
     error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
+    gene_id = None  # in case we ask a nonhuman gene
     if not error:
-        file_name = os.path.join("..", "genes", gene + ".txt")
-        s = Seq()  # null sequence
-        s.read_fasta(file_name)  # we give the objet a value
-        context = {
-            'gene': gene, 'sequence': str(s)
-        }
-        contents = read_html_template("human_gene.html").render(context=context)
-        code = HTTPStatus.OK
-    else:
-        contents = handle_error(endpoint, ENSEMBL_COMMUNICATION_ERROR)
-        code = HTTPStatus.SERVICE_UNAVAILABLE
-    return code, contents
+        print(f"Gene id: {data}")
+        gene_id = data["data"][0]["id"]  # we access the position 0 because we only receive one element on the list
+    return gene_id
+
+
+def human_gene(endpoint, parameters):
+    gene = parameters['gene'][0]  # 'gene' has to be equal to name="gene"
+    gene_id = get_id(gene)
+    print(f"Gene: {gene} - Gene ID: {gene_id}")
+    if gene_id is not None:
+        request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
+        url = f"{request['resource']}/{gene_id}?{request['params']}"
+        error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
+        if not error:
+            print(f"Gene sequence: {data}")
+            bases = data["seq"]
+            context = {
+                'gene': gene,
+                'bases': bases
+            }
+            contents = read_html_template("human_gene.html").render(context=context)
+            code = HTTPStatus.OK
+        else:
+            contents = handle_error(endpoint, ENSEMBL_COMMUNICATION_ERROR)
+            code = HTTPStatus.SERVICE_UNAVAILABLE
+        return code, contents
+    """else:
+        contents = handle_error(endpoint, GENE_ERROR)
+        code = HTTPStatus.NOT_FOUND
+        """
+
+
+def geneInfo(endpoint, parameters):
+    gene = parameters['gene'][0]  # 'gene' has to be equal to name="gene"
+    gene_id = get_id(gene)
+    print(f"Gene: {gene} - Gene ID: {gene_id}")
+    if gene_id is not None:
+        request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
+        url = f"{request['resource']}/{gene_id}?{request['params']}"
+        error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
+        if not error:
+            print(f"Gene Info: {data}")
+            start = data[0]["start"]  # we must take the position 0 from the list which is the dict will all the info
+            end = data[0]["end"]
+            length = end - start
+            chromosome = data[0]['assembly_name']
+            context = {
+                'id': gene_id,
+                'gene': gene,
+                'start': start,
+                'end': end,
+                'length': length,
+                'chromosome': chromosome
+            }
+            contents = read_html_template("gene_info.html").render(context=context)
+            code = HTTPStatus.OK
+        else:
+            contents = handle_error(endpoint, ENSEMBL_COMMUNICATION_ERROR)
+            code = HTTPStatus.SERVICE_UNAVAILABLE
+        return code, contents
 
 
 """MAIN PROGRAM"""
@@ -185,6 +247,8 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             code, contents = chromosome_length(endpoint, parameters)  # we use our function
         elif endpoint == "/geneSeq":
             code, contents = human_gene(endpoint, parameters)  # we use our function
+        elif endpoint == "/geneInfo":
+            code, contents = geneInfo(endpoint, parameters)  # we use our function
         else:
             contents = handle_error(endpoint, RESOURCE_NOT_AVAILABLE_ERROR)  # we use our function
             code = HTTPStatus.NOT_FOUND  # we change code to "404"
