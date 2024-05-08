@@ -25,7 +25,7 @@
         <hr>
 
         <form action="/gene" method="get">
-             Get a sequence. Select a sequence number:
+             Get a sequence. Select a sequence:
             <select name="gene_name">  <!-- remember name is the key and the values would be the different genes-->
                 {% for g in context.genes %} <!--will iterate through the elements of the list GENES -->
                     <option value={{g}}>{{g}}</option>
