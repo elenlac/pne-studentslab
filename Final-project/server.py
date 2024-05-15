@@ -8,7 +8,7 @@ import jinja2
 import os
 import json
 
-
+"""BASIC LEVEL SERVER"""
 PORT = 8080
 HTML_FOLDER = "html"  # optional, since we could have the html files in the same directory as the server
 ENSEMBL_SERVER = "rest.ensembl.org"  # the IP of the server
