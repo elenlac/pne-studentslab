@@ -2,16 +2,20 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Human gene Info</title>
+        <title>Human Gene Info</title>
     </head>
-    <body style="background-color: lightblue">
-        <h1>Gene {{context.gene}} info</h1>
+    <body style="background-color: lavender">
+    <h1>Gene <i>{{context.gene}}</i> info</h1>
         <ul>
-            <li>Chromosome name : {{context.chromosome}}</li>
-            <li>Id : {{context.id}}</li>
-            <li>Start: {{context.start}}</li>
-            <li> End : {{context.end}}</li>
-            <li>Length : {{context.length}}</li>
+            <li><u>Chromosome name</u>:  {{context.chromosome}}</li>
+
+            <li><u>Id</u>:  {{context.id}}</li>
+
+            <li><u>Start</u>:  {{context.start}}</li>
+
+            <li><u>End</u>:  {{context.end}}</li>
+
+            <li><u>Length</u>:  {{context.length}}</li>
         </ul><br>
         <p>
             <a href="/">Main page</a>

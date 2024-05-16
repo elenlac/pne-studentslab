@@ -113,9 +113,9 @@ def karyotype(endpoint, parameters):
 
 def chromosome_length(endpoint, parameters):
     request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
-    specie = parameters['species'][0]  # introduced by user
+    species = parameters['species'][0]  # introduced by user
     user_chromosome = parameters['chromo'][0]  # introduced by user, it is not always an integer!!!
-    url = f"{request['resource']}/{specie}?{request['params']}"
+    url = f"{request['resource']}/{species}?{request['params']}"
     error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
     if not error:
         length = None
@@ -139,7 +139,9 @@ def chromosome_length(endpoint, parameters):
         """
         context = {
             'length': length,
-            'chromosomes_list': chromosomes_list
+            'chromosomes_list': chromosomes_list,
+            'chromo': user_chromosome,
+            'species': species
         }
         contents = read_html_template("chromosome_length.html").render(context=context)
         code = HTTPStatus.OK
@@ -233,7 +235,8 @@ def genecalc(endpoint, parameters):
             s = Seq(bases)
             calc = s.info().replace("\n", "<br><br>")
             context = {
-                'calc': calc
+                'calc': calc,
+                'gene': gene
             }
             contents = read_html_template("gene_calculations.html").render(context=context)
             code = HTTPStatus.OK
@@ -260,7 +263,9 @@ def genelist(endpoint, parameters):
 
         context = {
             'chromo_number': user_chromosome,
-            'chromosomes': genes
+            'genes': genes,
+            'start': start,
+            'end': end
                 }
         contents = read_html_template("gene_list.html").render(context=context)
         code = HTTPStatus.OK
