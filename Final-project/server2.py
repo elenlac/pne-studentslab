@@ -92,15 +92,15 @@ def list_species(endpoint, parameters):
 
 def karyotype(endpoint, parameters):
     request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
-    specie = parameters['species'][0]
-    url = f"{request['resource']}/{specie}?{request['params']}"
+    species = parameters['species'][0]
+    url = f"{request['resource']}/{species}?{request['params']}"
     error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
     if not error:
         """print(data)"""
 
         """WE PARSE THE INFO FROM ENSEMBL"""
         context = {
-            'specie': specie,
+            'species': species,
             'karyotype': data['karyotype']
         }
         contents = read_html_template("karyotype.html").render(context=context)
@@ -257,9 +257,13 @@ def genelist(endpoint, parameters):
     if not error:
         print(f"Gene list: {data}")
         genes = []
-        for i in data:
-            gene = i['assembly_name']
-            genes.append(gene)
+        for i in data:  # every "i" is a dictionary of the list "data"
+            if i['feature_type'] == "gene":
+                if i.get("external_name"):  # we could do a KeyError exception?
+                    gene = i.get("external_name")
+                    genes.append(gene)
+        if len(genes) == 0:
+            genes = ["There are no genes in this region"]
 
         context = {
             'chromo_number': user_chromosome,
