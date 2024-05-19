@@ -3,7 +3,7 @@ from http import HTTPStatus
 import socketserver
 import termcolor
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, quote
 import jinja2
 import os
 import json
@@ -24,7 +24,7 @@ RESOURCE_TO_ENSEMBL_REQUEST = {
 }  # dict that contains a resource/endpoint as key with a dict as value. we state what we will request to ensembl
 RESOURCE_NOT_AVAILABLE_ERROR = "Resource not available"
 ENSEMBL_COMMUNICATION_ERROR = "Error in communication with the Ensembl server"
-GENES = ["ADA", "FRAT1", "FXN", "RNU6_269P", "U5"]
+GENES = ["ADA", "FRAT1", "FXN", "RNU6_269P", "U5"]  # for reference
 
 
 def read_html_template(file_name):  # RETURNS A TEMPLATE, we don't use it with index.html (static), or could render()
@@ -69,7 +69,7 @@ def list_species(endpoint, parameters):
     if not error:
         limit = None  # REMEMBER LIMIT IS OPTIONAL("None" as default), so if we receive it:
         if 'limit' in parameters:
-            limit = int(parameters['limit'][0])
+            limit = int(parameters['limit'][0])  #
         """print(data)"""
 
         """WE PARSE THE INFO FROM ENSEMBL"""
@@ -92,7 +92,7 @@ def list_species(endpoint, parameters):
 
 def karyotype(endpoint, parameters):
     request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
-    species = parameters['species'][0]
+    species = quote(parameters['species'][0])  # sent with good format-> change blank space with appropriate html format
     url = f"{request['resource']}/{species}?{request['params']}"
     error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
     if not error:
@@ -224,6 +224,7 @@ def genecalc(endpoint, parameters):
     gene = parameters['gene'][0]  # 'gene' has to be equal to name="gene"
     gene_id = get_id(gene)
     print(f"Gene: {gene} - Gene ID: {gene_id}")
+
     if gene_id is not None:
         request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
         url = f"{request['resource']}{gene_id}?{request['params']}"
@@ -231,9 +232,10 @@ def genecalc(endpoint, parameters):
         if not error:
             print(f"Gene calc: {data}")
             bases = data["seq"]
-            print(bases)
+            print(f"Bases: {bases}")
             s = Seq(bases)
             calc = s.info().replace("\n", "<br><br>")
+            #  could also introduce in "context" 'length': s.len() and 'info': s.info()
             context = {
                 'calc': calc,
                 'gene': gene
@@ -256,12 +258,16 @@ def genelist(endpoint, parameters):
     error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
     if not error:
         print(f"Gene list: {data}")
+        # data is a list of the human genes that are located on the X chromosome from start to finish/end
         genes = []
-        for i in data:  # every "i" is a dictionary of the list "data"
+        for i in data:  # every "i"=gene is a dictionary of the list of dicts "data"
             if i['feature_type'] == "gene":
                 if i.get("external_name"):  # we could do a KeyError exception?
-                    gene = i.get("external_name")
-                    genes.append(gene)
+                    genes.append(i.get("external_name"))
+                """OTHER WAY TO DO IT:
+                if 'external_name' in i:
+                genes.append(i['external_name'])"""
+
         if len(genes) == 0:
             genes = ["There are no genes in this region"]
 
