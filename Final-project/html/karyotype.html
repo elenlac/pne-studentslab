@@ -8,9 +8,9 @@
         <h1>Karyotype of <i>{{context.species}}</i> species</h1>
         <p>The name of the chromosomes are:</p>
         <ul>
-        {% for chromosome in context.karyotype %}
-        <li>{{chromosome}}</li>
-        {% endfor %}
+            {% for chromosome in context.karyotype_chromosomes %}
+            <li>{{chromosome}}</li>
+            {% endfor %}
         </ul><br>
         <p>
             <a href="/">Main page</a>
