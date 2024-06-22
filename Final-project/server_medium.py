@@ -39,7 +39,7 @@ IDs = {
 }
 
 
-def read_html_template(file_name):  # RETURNS A TEMPLATE, we don't use it with index.html (static)
+def read_html_template(file_name):  # RETURNS A TEMPLATE, we don't use it with basic_index.html (static)
     file_path = os.path.join(HTML_FOLDER, file_name)  # create the path to the file (valid for every os)
     contents = Path(file_path).read_text()  # create an object of class Path to read the file
     contents = jinja2.Template(contents)  # GENERATE A jinja2 TEMPLATE (use it to generate dynamic content)
@@ -321,7 +321,7 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         code = HTTPStatus.OK  # establish "200" as default
         content_type = "text/html"
         if endpoint == "/":
-            file_path = os.path.join(HTML_FOLDER, "index2.html")
+            file_path = os.path.join(HTML_FOLDER, "basic_index.html")
             contents = Path(file_path).read_text()
         elif endpoint == "/listSpecies":
             code, contents = list_species(endpoint, parameters)

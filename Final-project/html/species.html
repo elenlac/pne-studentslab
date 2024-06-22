@@ -6,11 +6,11 @@
     </head>
     <body style="background-color: LavenderBlush">
         <h1>List of species</h1>
-        <p>The total number of species in ensembl is: <b>{{context.number_of_species}}</b></p>
+        <p>The total number of species in ensembl is: <b>{{context.species_num}}</b></p>
         <p>The limit you have selected is: <i>{{context.limit}}</i></p>
         <p>The names of the species are:</p>
         <ul>
-            {% for name in context.name_species %}
+            {% for name in context.names %}
             <li>{{name}}</li>
             {% endfor %}
         </ul><br>

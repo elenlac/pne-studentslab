@@ -22,7 +22,7 @@ def process_client(client_socket):
 
         # DEPENDING ON THE RESOURCE, THE SERVER WILL DO THE FOLLOWING: FINAL VERSION OF THE WEB SERVER
         if resource == "/":
-            filename = os.path.join("html", "index.html")
+            filename = os.path.join("html", "basic_index.html")
             body = Path(filename).read_text()
             status_line = "HTTP/1.1 200 OK\n"
         elif resource == "/info/A":

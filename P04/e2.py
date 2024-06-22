@@ -28,7 +28,7 @@ def process_client(client_socket):  # we put the client socket since it is the c
             # and we call the method "read_text()" that reads it and gives back the content in a single str
             status_line = "HTTP/1.1 200 OK\n"  # Version: HTTP/1.1 , Status Code: 200 , Status: OK
         else:  # the server doesn't have the resource
-            filename = os.path.join("html", "index.html")
+            filename = os.path.join("html", "basic_index.html")
             body = Path(filename).read_text()
             status_line = "HTTP/1.1 404 Not found\n"
 

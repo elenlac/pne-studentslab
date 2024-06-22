@@ -12,7 +12,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         termcolor.cprint(self.requestline, 'green')
 
-        if self.path == "/" or self.path == "/index.html":
+        if self.path == "/" or self.path == "/basic_index.html":
             contents = Path("index.html").read_text()  # returns all contents of the file in string format
             self.send_response(200)
         else:

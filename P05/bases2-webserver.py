@@ -15,8 +15,8 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         resource = self.path
         # PREDEFINED RESOURCES ONLY:
         resource_to_file = {  # could act as a "constant" or a static class attribute (TestHandler.resource_to_file)
-            "/": "index.html",
-            "/index.html": "index.html",
+            "/": "basic_index.html",
+            "/basic_index.html": "basic_index.html",
             "/info/A.html": os.path.join("info", "A.html"),
             "/info/C.html": os.path.join("info", "C.html"),
             "/info/G.html": os.path.join("info", "G.html"),

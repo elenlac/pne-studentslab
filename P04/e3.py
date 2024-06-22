@@ -30,7 +30,7 @@ def process_client(client_socket):
             body = Path(filename).read_text()
             status_line = "HTTP/1.1 200 OK\n"
         else:
-            filename = os.path.join("html", "index.html")
+            filename = os.path.join("html", "basic_index.html")
             body = Path(filename).read_text()
             status_line = "HTTP/1.1 404 Not found\n"
 

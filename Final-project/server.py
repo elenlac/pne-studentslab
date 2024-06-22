@@ -1,192 +1,322 @@
 import http.server
+import http.client
 from http import HTTPStatus
 import socketserver
-import termcolor
+from termcolor import *
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs
-import jinja2
 import os
+from urllib.parse import urlparse, parse_qs, quote
+import jinja2 as j
 import json
+from Seq import Seq
 
-"""BASIC LEVEL SERVER"""
 PORT = 8080
-HTML_FOLDER = "html"  # optional, since we could have the html files in the same directory as the server
-ENSEMBL_SERVER = "rest.ensembl.org"  # the IP of the server
-RESOURCE_TO_ENSEMBL_REQUEST = {
-    '/listSpecies': {'resource': "/info/species", 'params': "content-type=application/json"},
-    '/karyotype': {'resource': "/info/assembly", 'params': "content-type=application/json"},
-    '/chromosomeLength': {'resource': "/info/assembly", 'params': "content-type=application/json"}
-}  # dict that contains a resource/endpoint as key with a dict as value. we state what we will request to ensembl
-RESOURCE_NOT_AVAILABLE_ERROR = "Resource not available"
-ENSEMBL_COMMUNICATION_ERROR = "Error in communication with the Ensembl server"
-
-
-def read_html_template(file_name):  # RETURNS A TEMPLATE, we don't use it with index.html (static), or could render()
-    file_path = os.path.join(HTML_FOLDER, file_name)
-    contents = Path(file_path).read_text()
-    contents = jinja2.Template(contents)
-    return contents
-
-
-def server_request(server, url):  # the server we connect to and the url of the request
-    import http.client  # local import, since we are only using it in this function
-
-    error = False
-    data = None
-    try:  # if everything is ok, data = content and error = false
-        connection = http.client.HTTPSConnection(server)  # HTTPS since "ensembl.org" works with a security layer
-        connection.request("GET", url)
-        response = connection.getresponse()  # response is type http response
-        if response.status == HTTPStatus.OK:
-            json_str = response.read().decode()
-            data = json.loads(json_str)
-        else:  # if response is not OK
-            error = True
-    except Exception:  # if there is ANY error in the communication with the server, data = none and error = true
-        error = True
-    return error, data  # returns a duple
-
-
-def handle_error(endpoint, message):  # endpoint: resource received from the user: message: str response
-    # the error.html file has been turned into a TEMPLATE, since the server fills the info depending on the error type
-    context = {
-        'endpoint': endpoint,
-        'message': message
-    }
-    return read_html_template("error.html").render(context=context)
-
-
-def list_species(endpoint, parameters):
-    request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]  # storing the dict what contains the keys "resource", "params"
-    url = f"{request['resource']}?{request['params']}"
-    error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
-    if not error:
-        limit = None  # REMEMBER LIMIT IS OPTIONAL("None" as default), so if we receive it:
-        if 'limit' in parameters:
-            limit = int(parameters['limit'][0])  #
-        """print(data)"""
-
-        """WE PARSE THE INFO FROM ENSEMBL"""
-        species = data['species']  # list<dict>, each species is a dict
-        name_species = []
-        for specie in species[:limit]:
-            name_species.append(specie['display_name'])
-        context = {
-            'number_of_species': len(species),
-            'limit': limit,
-            'name_species': name_species  # list
-        }
-        contents = read_html_template("species.html").render(context=context)
-        code = HTTPStatus.OK
-    else:
-        contents = handle_error(endpoint, ENSEMBL_COMMUNICATION_ERROR)  # we use our function and state a general error
-        code = HTTPStatus.SERVICE_UNAVAILABLE  # we change code to "503"
-    return code, contents  # returns a duple
-
-
-def karyotype(endpoint, parameters):
-    request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
-    specie = parameters['species'][0]
-    url = f"{request['resource']}/{specie}?{request['params']}"
-    error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
-    if not error:
-        """print(data)"""
-
-        """WE PARSE THE INFO FROM ENSEMBL"""
-        context = {
-            'specie': specie,
-            'karyotype': data['karyotype']
-        }
-        contents = read_html_template("karyotype.html").render(context=context)
-        code = HTTPStatus.OK
-    else:
-        contents = handle_error(endpoint, ENSEMBL_COMMUNICATION_ERROR)
-        code = HTTPStatus.SERVICE_UNAVAILABLE
-    return code, contents
-
-
-def chromosome_length(endpoint, parameters):
-    request = RESOURCE_TO_ENSEMBL_REQUEST[endpoint]
-    specie = parameters['species'][0]  # introduced by user
-    user_chromosome = parameters['chromo'][0]  # introduced by user, it is not always an integer!!!
-    url = f"{request['resource']}/{specie}?{request['params']}"
-    error, data = server_request(ENSEMBL_SERVER, url)  # we use our function
-    if not error:
-        length = None
-        print(data)
-        chromosomes_list = data['top_level_region']  # obtain all chromosomes of the specie, it is an array of objects
-        for chromo in chromosomes_list:  # will iterate the list of dicts
-            if chromo['name'] == user_chromosome:  # WE HAVE FOUND THE REQUESTED CHROMOSOME
-                length = chromo['length']
-                break
-
-        """OTHER WAY TO DO IT
-        length = None
-        found = False
-        i = 0  # index starts at 0
-        while not found and i < len(chromosomes_list):  # not found = True
-            chromo = chromosomes_list[i]
-            if chromo['name'] == user_chromosome:  # WE HAVE FOUND THE REQUESTED CHROMOSOME 
-                length = chromo['length']
-                found = True
-            i += 1
-        """
-        context = {
-            'length': length,
-            'chromosomes_list': chromosomes_list
-        }
-        contents = read_html_template("chromosome_length.html").render(context=context)
-        code = HTTPStatus.OK
-    else:
-        contents = handle_error(endpoint, ENSEMBL_COMMUNICATION_ERROR)
-        code = HTTPStatus.SERVICE_UNAVAILABLE
-    return code, contents
-
-
-"""MAIN PROGRAM"""
-
 socketserver.TCPServer.allow_reuse_address = True
 
 
-class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
-    def do_GET(self):
-        termcolor.cprint(self.requestline, 'green')
+def read_html_template(file_name):  # RETURNS A TEMPLATE, we don't use it with basic_index.html (static)
+    file_path = os.path.join("html", file_name)  # create the path to the file (valid for every os)
+    contents = Path(file_path).read_text()  # create an object of class Path to read the file
+    contents = j.Template(contents)  # GENERATE A jinja2 TEMPLATE (use it to generate dynamic content)
+    return contents
 
-        parsed_url = urlparse(self.path)
-        endpoint = parsed_url.path  # also known as resource/ path
-        print(f"Endpoint: {endpoint}")
-        parameters = parse_qs(parsed_url.query)  # takes the request and gets the info from "?": it is a dictionary
-        print(f"Parameters: {parameters}")
 
-        code = HTTPStatus.OK  # we establish "200" as default
-        content_type = "text/html"
-        if endpoint == "/":  # THIS FILE IS NOT A TEMPLATE, it is a STATIC WEB PAGE since server doesn't fill anything
-            file_path = os.path.join(HTML_FOLDER, "index.html")
-            contents = Path(file_path).read_text()
-        elif endpoint == "/listSpecies":
-            code, contents = list_species(endpoint, parameters)  # we use our function
-        elif endpoint == "/karyotype":
-            code, contents = karyotype(endpoint, parameters)  # we use our function
-        elif endpoint == "/chromosomeLength":
-            code, contents = chromosome_length(endpoint, parameters)  # we use our function
+def request_to_ensembl(url):
+    server = "rest.ensembl.org"  # the IP of the ensembl server
+    error = False
+    info = None
+    try:
+        connection = http.client.HTTPSConnection(server)
+        connection.request("GET", url)
+        response = connection.getresponse()
+        if response.status == HTTPStatus.OK:
+            info = json.loads(response.read().decode())
         else:
-            contents = handle_error(endpoint, RESOURCE_NOT_AVAILABLE_ERROR)  # we use our function
-            code = HTTPStatus.NOT_FOUND  # we change code to "404"
+            error = True
+            print(f"HTTP error occurred: {response.status} {response.reason}")
+        connection.close()
+    except Exception as e:
+        error = True
+        print(f"Exception occurred: {e}")
+    return error, info
+
+
+def obtain_gene_id(gene_name, endpoint):
+    resource = f"/homology/symbol/human/" + gene_name
+    params = 'content-type=application/json;format=condensed'
+    url = f"{resource}?{params}"
+    error, info = request_to_ensembl(url)
+    contents = ""
+    code = HTTPStatus.OK
+    gene_id = None
+    if not error:
+        # print(f"Gene id data: {data}")
+        gene_id = info["data"][0]["id"]
+    else:
+        error_message = "Gene ID not found"
+        context = {
+            'endpoint': endpoint,
+            'message': error_message
+        }
+        contents = read_html_template("error.html").render(context=context)
+        code = HTTPStatus.NOT_FOUND
+    return gene_id, contents, code
+
+
+def handle_endpoint(endpoint, parameters):
+    code = HTTPStatus.OK  # establish "200" as default
+
+    if endpoint == "/":
+        file_path = os.path.join("html", "index.html")
+        contents = Path(file_path).read_text()
+
+    elif endpoint == "/listSpecies":
+        resource = "/info/species"
+        params = "content-type=application/json"
+        url = f"{resource}?{params}"
+        error, info = request_to_ensembl(url)
+        if not error:
+            all_species = info['species']  # list<dict>, each species is a dict
+            limit = parameters.get("limit")  # REMEMBER LIMIT IS OPTIONAL("None" as default)
+            if limit:
+                limit = int(limit[0])
+            else:
+                limit = len(all_species)
+
+            print(f"List species data: {info}")
+
+            names = []
+            for s in all_species[:limit]:  # will iterate through the list of dicts
+                names.append(s['display_name'])
+
+            contents = read_html_template("species.html").render(context={'species_num': len(all_species),
+                                                                          'limit': limit, 'names': names})
+        else:
+            error_message = "Something went wrong"
+            context = {
+                'endpoint': endpoint,
+                'message': error_message
+            }
+            contents = read_html_template("error.html").render(context=context)
+            code = HTTPStatus.SERVICE_UNAVAILABLE  # we change code to "503"
+
+    elif endpoint == "/karyotype":
+        resource = "/info/assembly"
+        params = "content-type=application/json"
+        species = parameters.get('species')[0]
+        quote_species = quote(species)
+        # sent with good format -> change blank space with appropriate html format. FOR INTRODUCING INTO URL ONLY
+        url = f"{resource}/{quote_species}?{params}"
+        error, info = request_to_ensembl(url)
+        if not error:
+            print(f"Karyotype data: {info}")
+
+            chrom_karyotype = info['karyotype']
+            contents = read_html_template("karyotype.html").render(context={'species': species,
+                                                                            'karyotype_chromosomes': chrom_karyotype})
+        else:
+            error_message = "Something went wrong"
+            context = {
+                'endpoint': endpoint,
+                'message': error_message
+            }
+            contents = read_html_template("error.html").render(context=context)
+            code = HTTPStatus.SERVICE_UNAVAILABLE
+
+    elif endpoint == "/chromosomeLength":
+        resource = "/info/assembly"
+        params = "content-type=application/json"
+        species = parameters.get('species')[0]
+        chosen_chromo = parameters.get('chromo')[0]  # not always an integer!!!
+        url = f"{resource}/{species}?{params}"
+        error, info = request_to_ensembl(url)
+        if not error:
+            print(f"Chromosome length data: {info}")
+
+            list_of_chromo = info['top_level_region']
+            # obtain all chromosomes of the specie, it is an array of objects
+
+            length = None
+            for chromo in list_of_chromo:
+                if chromo['name'] == chosen_chromo:
+                    length = chromo['length']
+                    break
+
+            contents = read_html_template("chromosome_length.html").render(context={'length': length,
+                                                                                    'chromosomes_list': list_of_chromo,
+                                                                                    'chromo': chosen_chromo,
+                                                                                    'species': species})
+        else:
+            error_message = "Something went wrong"
+            context = {
+                'endpoint': endpoint,
+                'message': error_message
+            }
+            contents = read_html_template("error.html").render(context=context)
+            code = HTTPStatus.SERVICE_UNAVAILABLE
+
+    elif endpoint == "/geneSeq":
+        gene_name = parameters.get('gene')[0]
+        gene_id, error_contents, error_code = obtain_gene_id(gene_name, endpoint)
+
+        # print(f"Gene: {gene_name} - Gene ID: {gene_id}")
+
+        if gene_id:
+            resource = "/sequence/id"
+            params = "content-type=application/json"
+            url = f"{resource}/{gene_id}?{params}"
+            error, info = request_to_ensembl(url)
+            if not error:
+                print(f"Human gene sequence data: {info}")
+                sequence = info["seq"]
+                contents = read_html_template("human_gene.html").render(context={'gene': gene_name, 'bases': sequence})
+            else:
+                error_message = "Something went wrong"
+                context = {
+                    'endpoint': endpoint,
+                    'message': error_message
+                }
+                contents = read_html_template("error.html").render(context=context)
+                code = HTTPStatus.SERVICE_UNAVAILABLE
+        else:
+            contents = error_contents
+            code = error_code
+
+    elif endpoint == "/geneInfo":
+        gene_name = parameters.get('gene')[0]
+        gene_id, error_contents, error_code = obtain_gene_id(gene_name, endpoint)
+
+        # print(f"Gene: {gene_name} - Gene ID: {gene_id}")
+
+        if gene_id:
+            resource = "/overlap/id"
+            params = "content-type=application/json;feature=gene"
+            url = f"{resource}/{gene_id}?{params}"
+            error, info = request_to_ensembl(url)
+            if not error:
+                print(f"Gene info data: {info}")
+                start = info[0]["start"]
+                end = info[0]["end"]
+                length = end - start
+                chromosome = info[0]['seq_region_name']
+                contents = read_html_template("gene_info.html").render(context={'id': gene_id, 'gene': gene_name,
+                                                                                'start': start, 'end': end,
+                                                                                'length': length,
+                                                                                'chromosome': chromosome})
+            else:
+                error_message = "Something went wrong"
+                context = {
+                    'endpoint': endpoint,
+                    'message': error_message
+                }
+                contents = read_html_template("error.html").render(context=context)
+                code = HTTPStatus.SERVICE_UNAVAILABLE
+        else:
+            contents = error_contents
+            code = error_code
+
+    elif endpoint == "/geneCalc":
+        gene_name = parameters.get('gene')[0]
+        gene_id, error_contents, error_code = obtain_gene_id(gene_name, endpoint)
+        print(f"Gene: {gene_name} - Gene ID: {gene_id}")
+
+        if gene_id:
+            resource = "/sequence/id/"
+            params = "content-type=application/json;feature=gene"
+            url = f"{resource}{gene_id}?{params}"
+            error, info = request_to_ensembl(url)
+            if not error:
+                print(f"Gene calc data: {info}")
+                sequence = info["seq"]
+                s = Seq(sequence)
+                calc = s.info().replace("\n", "<br><br>")
+                #  could also introduce in "context" 'length': s.len() and 'info': s.info()
+                contents = read_html_template("gene_calculations.html").render(context={'calc': calc,
+                                                                                        'gene': gene_name})
+            else:
+                error_message = "Something went wrong"
+                context = {
+                    'endpoint': endpoint,
+                    'message': error_message
+                }
+                contents = read_html_template("error.html").render(context=context)
+                code = HTTPStatus.SERVICE_UNAVAILABLE
+        else:
+            contents = error_contents
+            code = error_code
+
+    elif endpoint == "/geneList":
+        user_chromosome = parameters['chromo'][0]
+        start = parameters['start'][0]
+        end = parameters['end'][0]
+        resource = "/overlap/region/human/"
+        params = "content-type=application/json"
+        url = (
+            f"{resource}{user_chromosome}:{start}-{end}?{params};feature=gene;feature=transcript;"
+            f"feature=cds;feature=exon")
+        error, info = request_to_ensembl(url)
+        if not error:
+            print(f"Gene list data: {info}")
+            # data is a list of the human genes that are located on the X chromosome from start to finish/end
+
+            genes_list = []
+            for i in info:  # every "i"=gene is a dictionary of the list of dicts "data"
+                if i['feature_type'] == "gene":
+                    if i.get("external_name"):
+                        genes_list.append(i.get("external_name"))
+
+            if len(genes_list) == 0:
+                genes_list.append("There are no genes in this region")
+
+            contents = read_html_template("gene_list.html").render(context={'chromo_number': user_chromosome,
+                                                                            'genes': genes_list, 'start': start,
+                                                                            'end': end})
+        else:
+            error_message = "Something went wrong"
+            context = {
+                'endpoint': endpoint,
+                'message': error_message
+            }
+            contents = read_html_template("error.html").render(context=context)
+            code = HTTPStatus.SERVICE_UNAVAILABLE
+
+    return code, contents
+
+
+class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
+    # inherits functionality for handling different types of HTTP requests,
+    # but also overrides specific methods of it to customise behaviour of the server
+
+    def do_GET(self):
+
+        print(colored(f"Request line: {self.requestline}", 'green'))
+        print(f"URL: {self.path}")
+        parsed_url = urlparse(self.path)  # slices the url into attributes contained in the ParseResult object
+        print(f"URL fragments: {parsed_url}")
+        endpoint = parsed_url.path
+        print(colored(f"Endpoint: {endpoint}", "blue"))
+        parameters = parse_qs(parsed_url.query)  # takes the info in 'query' and creates a dictionary -> {key:[]}
+        print(colored(f"Parameters: {parameters}", "blue"))
+
+        content_type = "text/html"
+        code, contents = handle_endpoint(endpoint, parameters)
 
         self.send_response(code)
-        contents_bytes = contents.encode()
+        contents_bytes = contents.encode()  # transform to bytes to send the contents through the network
         self.send_header('Content-Type', content_type)
         self.send_header('Content-Length', str(len(contents_bytes)))
         self.end_headers()
+        # finish sending HTTP headers to the client, after the server will start sending the body
 
         self.wfile.write(contents_bytes)
+        # writes the content of the response (body) to the output stream, preparing it to be sent to the client
 
 
 with socketserver.TCPServer(("", PORT), MyHTTPRequestHandler) as httpd:
     print("Serving at PORT...", PORT)
     try:
         httpd.serve_forever()
-    except KeyboardInterrupt:
+    except KeyboardInterrupt:  # Ctrl+C
         print()
         print("Stopped by the user")
-        httpd.server_close()
+        httpd.server_close()  # server_socket is closed and port is free

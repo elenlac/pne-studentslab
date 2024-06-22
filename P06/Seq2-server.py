@@ -52,8 +52,8 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         print(f"Arguments: {arguments}")
 
         code = HTTPStatus.OK
-        if resource == "/":  # or resource == "/index.html":  # MAIN WEB PAGE IS A TEMPLATE SINCE IT HAS DYNAMIC PART
-            contents = read_html_template("index.html")
+        if resource == "/":  # or resource == "/basic_index.html":  # MAIN WEB PAGE IS A TEMPLATE SINCE IT HAS DYNAMIC PART
+            contents = read_html_template("basic_index.html")
             context = {'n_sequences': len(SEQUENCES), 'genes': GENES}
             contents = contents.render(context=context)
             # render = update, it is a str once it has rendered since everything that had to be changed is done

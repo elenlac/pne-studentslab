@@ -15,7 +15,7 @@ def process_client(client_socket):
     print("Request line: ", end="")
     termcolor.cprint(request_line, 'green')
 
-    body = Path("index.html").read_text()  # generate an object of Path class and the path reaches index.html and reads
+    body = Path("index.html").read_text()  # generate an object of Path class and the path reaches basic_index.html and reads
     # we don't generate the code here, but take it from the file
     status_line = "HTTP/1.1 200 OK\n"
     header = "Content-Type: text/html\n"
